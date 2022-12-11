@@ -1,0 +1,36 @@
+body {
+    background: #111927;
+    color: #a4b1cd;
+    font-family: 'Covered By Your Grace', cursive;
+    font-size: 30px;
+}
+
+.title {
+    color: #9fef00;
+	font-size: 70px;
+    font-weight: 700;
+}
+
+a {
+	color: #fff;
+}
+
+a:hover,
+a:active,
+a:focus {
+	color: #ffc107;
+}
+
+.social {
+	margin: 0;
+	padding: 0;
+}
+
+.social li {
+	list-style: none;
+	display: inline-block;
+}
+
+.cerf {
+    font-size: 23px;
+}
