@@ -1,36 +1,615 @@
+/* ============================================
+   Base & Reset
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 70px;
+}
+
 body {
     background: #111927;
     color: #a4b1cd;
-    font-family: 'Covered By Your Grace', cursive;
-    font-size: 30px;
+    font-family: 'Fira Code', monospace;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
-.title {
-    color: #9fef00;
-	font-size: 70px;
-    font-weight: 700;
+h1, h2, h3, h4 {
+    font-family: 'Covered By Your Grace', cursive;
+    color: #fff;
 }
 
 a {
-	color: #fff;
+    color: #9fef00;
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 a:hover,
 a:active,
 a:focus {
-	color: #ffc107;
+    color: #ffc107;
+    text-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
 }
 
-.social {
-	margin: 0;
-	padding: 0;
+::selection {
+    background: #9fef00;
+    color: #111927;
 }
 
-.social li {
-	list-style: none;
-	display: inline-block;
+/* ============================================
+   Navigation
+   ============================================ */
+
+#mainNav {
+    background: rgba(17, 25, 39, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(159, 239, 0, 0.15);
+    padding: 0.8rem 0;
+    transition: background 0.3s ease;
 }
 
-.cerf {
-    font-size: 23px;
+.navbar-brand {
+    font-family: 'Covered By Your Grace', cursive;
+    font-size: 1.8rem;
+    color: #fff !important;
+}
+
+.brand-prompt {
+    color: #9fef00;
+    font-family: 'Fira Code', monospace;
+    font-size: 1.2rem;
+}
+
+.nav-link {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: #a4b1cd !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #9fef00 !important;
+    background: rgba(159, 239, 0, 0.08);
+}
+
+.navbar-toggler {
+    border-color: rgba(159, 239, 0, 0.3);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.15rem rgba(159, 239, 0, 0.25);
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Matrix canvas background */
+#matrix-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Radial glow overlay */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at 50% 50%, rgba(17, 25, 39, 0) 0%, #111927 70%),
+        radial-gradient(ellipse at 20% 50%, rgba(159, 239, 0, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(159, 239, 0, 0.03) 0%, transparent 50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Hero content sits above all effects */
+.hero-section > .container {
+    position: relative;
+    z-index: 3;
+}
+
+.hero-title {
+    font-size: 6rem;
+    font-weight: 700;
+    color: #9fef00;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.glow {
+    text-shadow:
+        0 0 20px rgba(159, 239, 0, 0.3),
+        0 0 40px rgba(159, 239, 0, 0.15),
+        0 0 80px rgba(159, 239, 0, 0.05);
+}
+
+.hero-tagline {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.2rem;
+    color: #a4b1cd;
+    min-height: 2em;
+    margin-bottom: 2rem;
+}
+
+/* Blinking cursor */
+.cursor {
+    font-weight: 400;
+    color: #9fef00;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ============================================
+   Social Icons
+   ============================================ */
+
+.social-icons {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(159, 239, 0, 0.3);
+    border-radius: 50%;
+    color: #a4b1cd;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+    color: #9fef00;
+    border-color: #9fef00;
+    box-shadow: 0 0 15px rgba(159, 239, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   Platform Badges
+   ============================================ */
+
+.platform-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.badge-pill {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border: 1px solid rgba(159, 239, 0, 0.3);
+    border-radius: 50px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: #a4b1cd;
+    transition: all 0.3s ease;
+}
+
+.badge-pill:hover {
+    color: #9fef00;
+    border-color: #9fef00;
+    background: rgba(159, 239, 0, 0.08);
+    box-shadow: 0 0 12px rgba(159, 239, 0, 0.15);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+
+.section {
+    padding: 80px 0;
+}
+
+.section-alt {
+    background: #0d1117;
+}
+
+.section-title {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+}
+
+.prompt {
+    color: #9fef00;
+    font-family: 'Fira Code', monospace;
+    font-size: 1.5rem;
+}
+
+/* ============================================
+   Terminal Window
+   ============================================ */
+
+.terminal-window {
+    background: #0d1117;
+    border: 1px solid rgba(159, 239, 0, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(159, 239, 0, 0.08);
+}
+
+.section-alt .terminal-window {
+    background: #111927;
+}
+
+.terminal-header {
+    background: rgba(159, 239, 0, 0.05);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(159, 239, 0, 0.1);
+}
+
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-dot.red { background: #ff5f57; }
+.terminal-dot.yellow { background: #febc2e; }
+.terminal-dot.green { background: #28c840; }
+
+.terminal-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: #a4b1cd;
+    margin-left: 8px;
+}
+
+.terminal-body {
+    padding: 24px;
+}
+
+/* ============================================
+   Owl Carousel Overrides
+   ============================================ */
+
+.owl-carousel .owl-item img {
+    max-height: 80px;
+    width: auto !important;
+    margin: 0 auto;
+    filter: grayscale(30%) brightness(0.9);
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.owl-carousel .owl-item img:hover {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.05);
+}
+
+.owl-carousel .owl-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+/* ============================================
+   CVE Discovery Cards
+   ============================================ */
+
+.cve-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.cve-card-link:hover {
+    color: inherit;
+    text-shadow: none;
+}
+
+.cve-card {
+    background: #0d1117;
+    border: 1px solid rgba(159, 239, 0, 0.12);
+    border-left: 3px solid #9fef00;
+    border-radius: 8px;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cve-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(159, 239, 0, 0.1);
+}
+
+.cve-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.cve-id {
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9fef00;
+}
+
+.cve-severity {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.cve-severity.medium {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.cve-severity.high {
+    background: rgba(255, 95, 87, 0.15);
+    color: #ff5f57;
+    border: 1px solid rgba(255, 95, 87, 0.3);
+}
+
+.cve-severity.critical {
+    background: rgba(255, 50, 50, 0.2);
+    color: #ff3232;
+    border: 1px solid rgba(255, 50, 50, 0.4);
+}
+
+.cve-product {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.cve-desc {
+    font-size: 0.8rem;
+    color: #a4b1cd;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.cve-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: #6b7a94;
+    border: 1px solid rgba(164, 177, 205, 0.15);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+}
+
+/* ============================================
+   Certification Cards
+   ============================================ */
+
+.cert-card {
+    background: #0d1117;
+    border: 1px solid rgba(159, 239, 0, 0.12);
+    border-top: 3px solid #9fef00;
+    border-radius: 8px;
+    padding: 2rem 1.5rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cert-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(159, 239, 0, 0.1);
+}
+
+.cert-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(159, 239, 0, 0.1);
+}
+
+.cert-card-header h3 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.cert-icon {
+    font-size: 1.5rem;
+    color: #9fef00;
+}
+
+.cert-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cert-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(164, 177, 205, 0.08);
+}
+
+.cert-list li:last-child {
+    border-bottom: none;
+}
+
+.cert-list a {
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.cert-date {
+    font-size: 0.7rem;
+    color: #6b7a94;
+    display: block;
+}
+
+/* ============================================
+   Education Card
+   ============================================ */
+
+.edu-card {
+    background: #111927;
+    border: 1px solid rgba(159, 239, 0, 0.12);
+    border-radius: 8px;
+    padding: 3rem 2rem;
+}
+
+.section-alt .edu-card {
+    background: #0d1117;
+}
+
+.edu-icon {
+    font-size: 2.5rem;
+    color: #9fef00;
+    margin-bottom: 1rem;
+}
+
+.edu-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.edu-date {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: #6b7a94;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+footer {
+    background: #0a0f1a;
+    border-top: 1px solid rgba(159, 239, 0, 0.1);
+    padding: 2rem 0;
+    font-size: 0.85rem;
+}
+
+.footer-socials {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.footer-socials a {
+    color: #6b7a94;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.footer-socials a:hover {
+    color: #9fef00;
+}
+
+@media (max-width: 767.98px) {
+    .footer-socials {
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   Scroll Reveal Animations
+   ============================================ */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger children */
+.reveal:nth-child(2) { transition-delay: 0.1s; }
+.reveal:nth-child(3) { transition-delay: 0.2s; }
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 991.98px) {
+    .hero-title {
+        font-size: 4.5rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-title {
+        font-size: 3.5rem;
+    }
+
+    .hero-tagline {
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+    }
+
+    .section {
+        padding: 60px 0;
+    }
+
+    .cert-card {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-title {
+        font-size: 2.8rem;
+    }
+
+    .badge-pill {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.8rem;
+    }
 }

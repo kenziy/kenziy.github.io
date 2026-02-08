@@ -1,216 +1,320 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- CSS only -->
-	<link href="//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-	<link rel="preconnect" href="//fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" type="text/css" href="css/assets/owl.carousel.min.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<title>kenziy</title>
+	<!-- Bootstrap 5.2.3 -->
+	<link href="//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="//fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+	<!-- Font Awesome 6.2.1 -->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- Owl Carousel -->
+	<link rel="stylesheet" type="text/css" href="css/assets/owl.carousel.min.css">
+	<!-- Custom styles -->
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-	<div class="container mt-5">
-		<div class="row">
-			<div class="col-12 text-center">
-				<h1 class="title">KENZIY</h1>
-				<p>Hacker. Pentester. Programmer. Trainer.</p>
-				<ul class="social">
-					<li>
-						<a href="https://www.facebook.com/kenneth.billones/">
-							<i class="fa-brands fa-square-facebook"></i>
-						</a>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top" id="mainNav">
+		<div class="container">
+			<a class="navbar-brand" href="#">
+				<span class="brand-prompt">~/</span>kenziy
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" href="#about">about</a>
 					</li>
-					<li>
-						<a href="https://twitter.com/k3nziy">
-							<i class="fa-brands fa-square-twitter"></i>
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="#targets">targets</a>
 					</li>
-					<li>
-						<a href="https://www.linkedin.com/in/kenziy/">
-							<i class="fa-brands fa-linkedin"></i>
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="#cves">cves</a>
 					</li>
-				</ul>
-				<ul class="social">
-					<li>
-						<a href="https://hackerone.com/kenziy">
-							HackerOne
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="#certs">certs</a>
 					</li>
-					<li>
-						<a href="https://www.openbugbounty.org/researchers/kenziy/">
-							Openbugbounty
-						</a>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/profile/kenziy">
-							PentesterLab
-						</a>
-					</li>
-					<li>
-						<a href="https://www.hackerrank.com/kenziy">
-							HackerRank
-						</a>
+					<li class="nav-item">
+						<a class="nav-link" href="#education">education</a>
 					</li>
 				</ul>
 			</div>
 		</div>
-	</div>
-	<div class="container mt-5">
-		<div class="row">
-			<div class="col-12 text-center">
-				<h1><span class="text-warning">##</span>Companies I’ve Hacked</h1>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-12">
-				<div class="owl-carousel">
-				  <div>
-				  	<img src="img/h1.png">
-				  </div>
-				  <div>
-				  	<img src="img/ph.png">
-				  </div>
-				  <div>
-				  	<img src="img/microsoft.png">
-				  </div>
-				  <div>
-				  	<img src="img/valve.png">
-				  </div>
-				  <div>
-				  	<img src="img/uber.png">
-				  </div>
-				  <div>
-				  	<img src="img/sony.png">
-				  </div>
-				  <div>
-				  	<img src="img/tuenti.png">
-				  </div>
-				  <div>
-				  	<img src="img/Boozt.png">
-				  </div>
-				  <div>
-				  	<img src="img/YouPorn.png">
-				  </div>
-				  <div>
-				  	<img src="img/glitch.png">
-				  </div>
-				  <div>
-				  	<img src="img/rbs.png">
-				  </div>
-				  <div>
-				  	<img src="img/tmobile.png">
-				  </div>
+	</nav>
+
+	<!-- Hero Section -->
+	<section id="about" class="hero-section">
+		<canvas id="matrix-bg"></canvas>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-10 text-center">
+					<h1 class="hero-title glow">KENZIY</h1>
+					<p class="hero-tagline">
+						<span id="typed-text"></span><span class="cursor">|</span>
+					</p>
+					<ul class="social-icons">
+						<li>
+							<a href="https://www.facebook.com/kenneth.billones/" class="social-btn" aria-label="Facebook">
+								<i class="fa-brands fa-facebook-f"></i>
+							</a>
+						</li>
+						<li>
+							<a href="https://twitter.com/k3nziy" class="social-btn" aria-label="Twitter">
+								<i class="fa-brands fa-twitter"></i>
+							</a>
+						</li>
+						<li>
+							<a href="https://www.linkedin.com/in/kenziy/" class="social-btn" aria-label="LinkedIn">
+								<i class="fa-brands fa-linkedin-in"></i>
+							</a>
+						</li>
+					</ul>
+					<div class="platform-badges">
+						<a href="https://hackerone.com/kenziy" class="badge-pill">HackerOne</a>
+						<a href="https://www.openbugbounty.org/researchers/kenziy/" class="badge-pill">Openbugbounty</a>
+						<a href="https://pentesterlab.com/profile/kenziy" class="badge-pill">PentesterLab</a>
+						<a href="https://www.hackerrank.com/kenziy" class="badge-pill">HackerRank</a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="container mt-5">
-		<div class="row">
-			<div class="col-12 text-center">
-				<h1><span class="text-warning">##</span>Certifications</h1>
-			</div>
-			<div class="col-md-4 col-12 mt-5">
-				<h3><span class="text-warning">##</span>Hacking</h3>
-				<ul class="cerf">
-					<li>
-						<a href="https://pentesterlab.com/certs/1806f2f318053dd2a117ac06ebfe96">PentesterLab - Code Review Badge</a>
-						<div>May 2025 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/008d42134ee0b3b853c9b43e03cf5c">PentesterLab - PCAP badge</a>
-						<div>May 2025 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/d6bb770129b5577a820a8dba920a10">PentesterLab - Serialize Badge</a>
-						<div>April 2023 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/3af31ad1b3a63f45ca9ce07cfa13cc">PentesterLab - White Badge</a>
-						<div>December 2022 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/23453e99aaa002b8e623bb0978de0b">PentesterLab - Unix Badge</a>
-						<div>December 2022 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/67aaec97ef43b007c3b7911063f41b">PentesterLab - Essential Badge</a>
-						<div>October 2022 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/45283d2e04991c6f75aaea7fc19a0a">PentesterLab - HTTP Badge</a>
-						<div>July 2022 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://pentesterlab.com/certs/3af31ad1b3a63f45ca9ce07cfa13cc">PentesterLab - Android Badge</a>
-						<div>July 2022 - No Expiration Date</div>
-					</li>
-				</ul>
-			</div>
-			<div class="col-md-4 col-12 mt-5">
-				<h3><span class="text-warning">##</span>Programming</h3>
-				<ul class="cerf">
-					<li>
-						<a href="https://www.hackerrank.com/certificates/iframe/6a501cbc9bdf">JavaScript (Basic) Certificate</a>
-						<div>April 2023 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://www.hackerrank.com/certificates/a4f35c9ac286">HackerRank - SQL (Intermediate) Certificate</a>
-						<div>December 2022 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://www.hackerrank.com/certificates/40865e14c7e6">HackerRank - SQL (Basic) Certificate</a>
-						<div>December 2022 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="https://www.hackerrank.com/certificates/00c73dbf6b72">HackerRank - CSS Certificate</a>
-						<div>December 2022 - No Expiration Date</div>
-					</li>
-				</ul>
-			</div>
-			<div class="col-md-4 col-12 mt-5">
-				<h3><span class="text-warning">##</span>Trainings</h3>
-				<ul class="cerf">
-					<li>
-						<a href="#">Introduction to Penetration Testing</a>
-						<div>Feb 2025 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="#">AI in Modern Programming</a>
-						<div>April 2023 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="#">Defending Against Email Phishing</a>
-						<div>April 2023 - No Expiration Date</div>
-					</li>
-					<li>
-						<a href="#">WordPress Webinar Guest Speaker Certificate</a>
-						<div>April 2022 - No Expiration Date</div>
-					</li>
-				</ul>
-			</div>
-			<div class="col-12 mt-5 text-center">
-				<h1><span class="text-warning">##</span>Education</h1>
-				<p>Bachelor of Science in Information Technology (2018 - 2014)</p>
-			</div>
-		</div>
-	</div>
+	</section>
 
-	<footer class="mt-5">
+	<!-- Companies Section -->
+	<section id="targets" class="section section-alt">
 		<div class="container">
 			<div class="row">
-				<div class="col-12 text-center">
+				<div class="col-12 text-center reveal">
+					<h2 class="section-title"><span class="prompt">$ </span>Companies I've Hacked</h2>
+				</div>
+			</div>
+			<div class="row mt-4">
+				<div class="col-12 reveal">
+					<div class="terminal-window">
+						<div class="terminal-header">
+							<span class="terminal-dot red"></span>
+							<span class="terminal-dot yellow"></span>
+							<span class="terminal-dot green"></span>
+							<span class="terminal-title">~/targets</span>
+						</div>
+						<div class="terminal-body">
+							<div class="owl-carousel">
+								<div><img src="img/h1.png" alt="HackerOne"></div>
+								<div><img src="img/ph.png" alt="PH"></div>
+								<div><img src="img/microsoft.png" alt="Microsoft"></div>
+								<div><img src="img/valve.png" alt="Valve"></div>
+								<div><img src="img/uber.png" alt="Uber"></div>
+								<div><img src="img/sony.png" alt="Sony"></div>
+								<div><img src="img/tuenti.png" alt="Tuenti"></div>
+								<div><img src="img/Boozt.png" alt="Boozt"></div>
+								<div><img src="img/YouPorn.png" alt="YouPorn"></div>
+								<div><img src="img/glitch.png" alt="Glitch"></div>
+								<div><img src="img/rbs.png" alt="RBS"></div>
+								<div><img src="img/tmobile.png" alt="T-Mobile"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- CVE Discoveries Section -->
+	<section id="cves" class="section">
+		<div class="container">
+			<div class="row">
+				<div class="col-12 text-center reveal">
+					<h2 class="section-title"><span class="prompt">$ </span>CVE Discoveries</h2>
+				</div>
+			</div>
+			<div class="row mt-4 justify-content-center">
+				<div class="col-md-6 col-12 reveal">
+					<a href="https://www.cve.org/CVERecord?id=CVE-2025-6986" class="cve-card-link">
+						<div class="cve-card">
+							<div class="cve-card-header">
+								<span class="cve-id">CVE-2025-6986</span>
+								<span class="cve-severity medium">MEDIUM 6.5</span>
+							</div>
+							<p class="cve-product">FileBird &mdash; WordPress Media Library Folders &amp; File Manager &le; 6.4.8</p>
+							<p class="cve-desc">SQL Injection via the 'search' parameter allows authenticated attackers with Author-level access to extract sensitive database information.</p>
+							<span class="cve-tag">CWE-89 &middot; SQL Injection</span>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-6 col-12 reveal">
+					<a href="https://www.cve.org/CVERecord?id=CVE-2025-6977" class="cve-card-link">
+						<div class="cve-card">
+							<div class="cve-card-header">
+								<span class="cve-id">CVE-2025-6977</span>
+								<span class="cve-severity medium">MEDIUM 6.1</span>
+							</div>
+							<p class="cve-product">ProfileGrid &mdash; User Profiles, Groups and Communities &le; 5.9.5.4</p>
+							<p class="cve-desc">Reflected Cross-Site Scripting (XSS) in pm_get_messenger_notification allows unauthenticated attackers to inject malicious scripts via crafted links.</p>
+							<span class="cve-tag">CWE-79 &middot; Cross-site Scripting</span>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Certifications Section -->
+	<section id="certs" class="section">
+		<div class="container">
+			<div class="row">
+				<div class="col-12 text-center reveal">
+					<h2 class="section-title"><span class="prompt">$ </span>Certifications</h2>
+				</div>
+			</div>
+			<div class="row mt-4">
+				<div class="col-md-4 col-12 reveal">
+					<div class="cert-card">
+						<div class="cert-card-header">
+							<i class="fa-solid fa-shield-halved cert-icon"></i>
+							<h3>Hacking</h3>
+						</div>
+						<ul class="cert-list">
+							<li>
+								<a href="https://pentesterlab.com/certs/1806f2f318053dd2a117ac06ebfe96">PentesterLab - Code Review Badge</a>
+								<span class="cert-date">May 2025 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/008d42134ee0b3b853c9b43e03cf5c">PentesterLab - PCAP Badge</a>
+								<span class="cert-date">May 2025 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/d6bb770129b5577a820a8dba920a10">PentesterLab - Serialize Badge</a>
+								<span class="cert-date">April 2023 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/3af31ad1b3a63f45ca9ce07cfa13cc">PentesterLab - White Badge</a>
+								<span class="cert-date">December 2022 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/23453e99aaa002b8e623bb0978de0b">PentesterLab - Unix Badge</a>
+								<span class="cert-date">December 2022 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/67aaec97ef43b007c3b7911063f41b">PentesterLab - Essential Badge</a>
+								<span class="cert-date">October 2022 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/45283d2e04991c6f75aaea7fc19a0a">PentesterLab - HTTP Badge</a>
+								<span class="cert-date">July 2022 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://pentesterlab.com/certs/3af31ad1b3a63f45ca9ce07cfa13cc">PentesterLab - Android Badge</a>
+								<span class="cert-date">July 2022 - No Expiration Date</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-4 col-12 reveal">
+					<div class="cert-card">
+						<div class="cert-card-header">
+							<i class="fa-solid fa-code cert-icon"></i>
+							<h3>Programming</h3>
+						</div>
+						<ul class="cert-list">
+							<li>
+								<a href="https://www.hackerrank.com/certificates/iframe/6a501cbc9bdf">HackerRank - JavaScript (Basic) Certificate</a>
+								<span class="cert-date">April 2023 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://www.hackerrank.com/certificates/a4f35c9ac286">HackerRank - SQL (Intermediate) Certificate</a>
+								<span class="cert-date">December 2022 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://www.hackerrank.com/certificates/40865e14c7e6">HackerRank - SQL (Basic) Certificate</a>
+								<span class="cert-date">December 2022 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="https://www.hackerrank.com/certificates/00c73dbf6b72">HackerRank - CSS Certificate</a>
+								<span class="cert-date">December 2022 - No Expiration Date</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-4 col-12 reveal">
+					<div class="cert-card">
+						<div class="cert-card-header">
+							<i class="fa-solid fa-chalkboard-user cert-icon"></i>
+							<h3>Trainings</h3>
+						</div>
+						<ul class="cert-list">
+							<li>
+								<a href="#">Introduction to Penetration Testing</a>
+								<span class="cert-date">February 2025 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="#">AI in Modern Programming</a>
+								<span class="cert-date">April 2023 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="#">Defending Against Email Phishing</a>
+								<span class="cert-date">April 2023 - No Expiration Date</span>
+							</li>
+							<li>
+								<a href="#">WordPress Webinar Guest Speaker Certificate</a>
+								<span class="cert-date">April 2022 - No Expiration Date</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Education Section -->
+	<section id="education" class="section section-alt">
+		<div class="container">
+			<div class="row">
+				<div class="col-12 text-center reveal">
+					<h2 class="section-title"><span class="prompt">$ </span>Education</h2>
+				</div>
+			</div>
+			<div class="row mt-4 justify-content-center">
+				<div class="col-md-6 col-12 reveal">
+					<div class="edu-card text-center">
+						<i class="fa-solid fa-graduation-cap edu-icon"></i>
+						<h3>Bachelor of Science in Information Technology</h3>
+						<span class="edu-date">2014 - 2018</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-md-6 col-12 text-center text-md-start">
 					<small><i class="fa-regular fa-copyright"></i> Kenziy</small>
+				</div>
+				<div class="col-md-6 col-12 text-center text-md-end mt-3 mt-md-0">
+					<div class="footer-socials">
+						<a href="https://www.facebook.com/kenneth.billones/" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+						<a href="https://twitter.com/k3nziy" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+						<a href="https://www.linkedin.com/in/kenziy/" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</footer>
 
+	<!-- Scripts -->
 	<script src="//code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="js/owl.carousel.min.js"></script>	
-	<script type="text/javascript" src="js/script.js"></script>	
+	<script src="//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/owl.carousel.min.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>
