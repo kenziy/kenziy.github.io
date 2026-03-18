@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>~/kenziy — OWASP Mobile Top 10:2025 Android Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #000000;
+    --surface:  #0a0a0a;
+    --border:   #1a1a1a;
+    --border2:  #222222;
+    --green:    #00ff41;
+    --green2:   rgba(0,255,65,0.12);
+    --green-glow: 0 0 8px rgba(0,255,65,0.35);
+    --red:      #ff3333;
+    --yellow:   #ffcc00;
+    --cyan:     #00e5ff;
+    --gray:     #444444;
+    --text:     #c8c8c8;
+    --text-dim: #555555;
+    --mono:     'Share Tech Mono', 'Courier New', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .navbar {
+    border-bottom: 1px solid var(--border2);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+
+  .nav-brand {
+    color: var(--green);
+    font-size: 15px;
+    text-decoration: none;
+    text-shadow: var(--green-glow);
+  }
+  .nav-brand .dim { color: var(--text-dim); }
+
+  .nav-links {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.12s;
+  }
+  .nav-links a:hover { color: var(--green); }
+
+  .header {
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .header-path {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .header-path .hl { color: var(--green); }
+
+  .header-title {
+    font-size: clamp(15px, 3.5vw, 22px);
+    color: var(--green);
+    text-shadow: var(--green-glow);
+    margin-bottom: 4px;
+  }
+  .header-title .prompt { color: var(--text-dim); }
+
+  .header-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 18px;
+  }
+  .header-sub a { color: var(--cyan); text-decoration: none; }
+  .header-sub a:hover { text-decoration: underline; }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .progress-label strong {
+    color: var(--green);
+    font-size: 16px;
+    text-shadow: var(--green-glow);
+  }
+  .progress-track {
+    flex: 1;
+    min-width: 100px;
+    max-width: 280px;
+    height: 4px;
+    background: var(--border2);
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--green);
+    box-shadow: var(--green-glow);
+    transition: width 0.3s ease;
+  }
+  .progress-pct {
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 15px;
+    background: var(--green);
+    vertical-align: middle;
+    margin-left: 3px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .controls {
+    padding: 10px 24px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .target-input {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--green);
+    outline: none;
+    width: clamp(140px, 30vw, 240px);
+    caret-color: var(--green);
+    transition: border-color 0.12s;
+  }
+  .target-input::placeholder { color: var(--text-dim); }
+  .target-input:focus { border-color: var(--green); }
+
+  .sep { width: 1px; height: 18px; background: var(--border2); flex-shrink: 0; }
+
+  .btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 11px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text-dim);
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .btn:hover        { border-color: var(--green); color: var(--green); }
+  .btn.active       { border-color: var(--green); color: var(--green); background: var(--green2); }
+  .btn.danger       { color: var(--red); border-color: rgba(255,51,51,0.2); }
+  .btn.danger:hover { background: rgba(255,51,51,0.07); border-color: var(--red); }
+
+  .main {
+    padding: 18px 24px 64px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .category {
+    margin-bottom: 14px;
+    border: 1px solid var(--border2);
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  .cat-header:hover { background: #0f0f0f; }
+
+  .cat-prompt { color: var(--text-dim); font-size: 13px; flex-shrink: 0; }
+  .cat-id     { color: var(--green); font-size: 12px; flex-shrink: 0; text-shadow: var(--green-glow); }
+  .cat-title  { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cat-stats  { font-size: 11px; color: var(--text-dim); flex-shrink: 0; margin-left: 8px; }
+  .cat-stats .done { color: var(--green); }
+  .cat-chevron { color: var(--text-dim); font-size: 10px; transition: transform 0.16s; flex-shrink: 0; }
+
+  .category.collapsed .cat-chevron { transform: rotate(-90deg); }
+  .category.collapsed .cat-body    { display: none; }
+
+  .cat-desc {
+    padding: 8px 14px;
+    font-size: 11px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.5);
+    line-height: 1.7;
+  }
+  .cat-desc::before { content: '# '; color: var(--border2); }
+
+  .test-item {
+    display: grid;
+    grid-template-columns: 3px 18px 1fr;
+    gap: 0 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.08s;
+    align-items: start;
+  }
+  .test-item:last-child { border-bottom: none; }
+  .test-item:hover { background: rgba(0,255,65,0.025); }
+  .test-item.done  { background: rgba(0,255,65,0.015); }
+  .test-item.done .test-name {
+    color: var(--text-dim);
+    text-decoration: line-through;
+    text-decoration-color: rgba(0,255,65,0.2);
+  }
+  .test-item.done .test-detail { opacity: 0.38; }
+
+  .sev-bar { align-self: stretch; min-height: 16px; }
+  .s-high { background: var(--red);    box-shadow: 0 0 5px rgba(255,51,51,0.4); }
+  .s-med  { background: var(--yellow); box-shadow: 0 0 5px rgba(255,204,0,0.35); }
+  .s-low  { background: var(--cyan);   box-shadow: 0 0 5px rgba(0,229,255,0.3); }
+  .s-info { background: var(--gray); }
+
+  .check-box {
+    width: 14px; height: 14px;
+    border: 1px solid var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+  .test-item:hover .check-box    { border-color: var(--green); }
+  .test-item.done .check-box     { background: var(--green); border-color: var(--green); box-shadow: var(--green-glow); }
+  .check-box svg                 { display: none; }
+  .test-item.done .check-box svg { display: block; }
+
+  .test-content { min-width: 0; }
+
+  .test-name {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+  .test-name::before { content: '> '; color: var(--text-dim); }
+
+  .test-detail {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    margin-bottom: 6px;
+  }
+
+  .test-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border: 1px solid;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .t-high { color: var(--red);    border-color: rgba(255,51,51,0.3);  background: rgba(255,51,51,0.05); }
+  .t-med  { color: var(--yellow); border-color: rgba(255,204,0,0.3);  background: rgba(255,204,0,0.04); }
+  .t-low  { color: var(--cyan);   border-color: rgba(0,229,255,0.25); background: rgba(0,229,255,0.04); }
+  .t-tool { color: var(--green);  border-color: rgba(0,255,65,0.2);   background: rgba(0,255,65,0.04); }
+  .t-cwe  { color: #666;          border-color: rgba(100,100,100,0.2);background: transparent; }
+
+  footer {
+    text-align: center;
+    padding: 18px 24px;
+    font-size: 11px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border2);
+  }
+  footer a { color: var(--green); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .navbar    { padding: 10px 14px; }
+    .header    { padding: 16px 14px 14px; }
+    .controls  { padding: 8px 14px; }
+    .main      { padding: 12px 14px 52px; }
+    .cat-header { padding: 9px 12px; gap: 6px; }
+    .cat-desc  { padding: 7px 12px; }
+    .test-item { padding: 9px 12px; gap: 0 10px; }
+    .test-name { font-size: 12px; }
+    .btn       { font-size: 10px; padding: 5px 8px; }
+    .target-input { width: 100%; }
+    .sep       { display: none; }
+    .progress-track { min-width: 70px; }
+    .nav-links { gap: 10px; }
+  }
+
+  @media (max-width: 380px) {
+    .nav-links { display: none; }
+    .header-title { font-size: 13px; }
+    .cat-title { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="https://kenziy.com"><span class="dim">~/</span>kenziy</a>
+  <ul class="nav-links">
+    <li><a href="https://kenziy.com/#about">about</a></li>
+    <li><a href="https://kenziy.com/#targets">targets</a></li>
+    <li><a href="https://kenziy.com/#cves">cves</a></li>
+    <li><a href="https://kenziy.com/#certs">certs</a></li>
+    <li><a href="https://hackerone.com/kenziy" target="_blank">hackerone</a></li>
+  </ul>
+</nav>
+
+<div class="header">
+  <div class="header-path">~/kenziy/<span class="hl">android-checklist</span></div>
+  <div class="header-title">
+    <span class="prompt">$ </span>OWASP Mobile Top 10:2025 — Android<span class="cursor"></span>
+  </div>
+  <div class="header-sub">
+    source: <a href="https://owasp.org/www-project-mobile-top-10/" target="_blank">owasp.org/www-project-mobile-top-10/</a>
+    &nbsp;·&nbsp; authorized penetration testing only
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><strong id="doneCount">0</strong> / <span id="totalCount">0</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-pct" id="percentText">0%</div>
+  </div>
+</div>
+
+<div class="controls">
+  <input class="target-input" type="text" id="targetInput" placeholder="target: com.example.app" />
+  <div class="sep"></div>
+  <button class="btn" onclick="expandAll()">expand_all</button>
+  <button class="btn" onclick="collapseAll()">collapse_all</button>
+  <div class="sep"></div>
+  <button class="btn active" id="fAll"     onclick="filterAll()">--all</button>
+  <button class="btn"        id="fPending" onclick="filterPending()">--pending</button>
+  <button class="btn"        id="fDone"    onclick="filterDone()">--done</button>
+  <div class="sep"></div>
+  <button class="btn danger" onclick="resetAll()">reset</button>
+</div>
+
+<main class="main" id="main"></main>
+
+<footer>
+  <a href="https://kenziy.com">~/kenziy</a>
+  &nbsp;·&nbsp;
+  <a href="https://owasp.org/www-project-mobile-top-10/" target="_blank">OWASP Mobile Top 10</a>
+  &nbsp;·&nbsp;
+  <a href="https://hackerone.com/kenziy" target="_blank">HackerOne</a>
+  &nbsp;·&nbsp; for authorized use only
+</footer>
+
+<script>
+const CATS = [
+  { id:"M01:2025", title:"Improper Credential Usage",
+    desc:"Hardcoded credentials, insecure credential storage, and improper use of platform credential management APIs lead to credential theft and unauthorized access.",
+    tests:[
+      {n:"Hardcoded Credentials in APK",d:"Decompile APK with jadx/apktool and search for API keys, passwords, tokens, and secrets in source code, resources, and native libraries.",s:"high",t:["jadx","apktool","MobSF"],c:["CWE-798"]},
+      {n:"Insecure Credential Storage in SharedPreferences",d:"Inspect SharedPreferences XML files on device for plaintext passwords, tokens, or session IDs stored without encryption.",s:"high",t:["adb","MobSF","Frida"],c:["CWE-312"]},
+      {n:"Credential Leakage in Logs",d:"Monitor logcat output during authentication flows for credentials, tokens, or sensitive user data being logged by the application.",s:"high",t:["adb","pidcat"],c:["CWE-532"]},
+      {n:"Weak Credential Transmission",d:"Intercept network traffic to verify credentials are transmitted over TLS and not sent in plaintext or weakly encoded (Base64).",s:"high",t:["Burp Suite","mitmproxy"],c:["CWE-319"]},
+      {n:"Improper Android Keystore Usage",d:"Verify that cryptographic keys are stored in Android Keystore with proper access controls, not in app-accessible storage or hardcoded.",s:"high",t:["Frida","objection"],c:["CWE-321"]},
+      {n:"Biometric Authentication Bypass",d:"Test if biometric auth can be bypassed by hooking BiometricPrompt callbacks with Frida to force successful authentication without valid biometrics.",s:"high",t:["Frida","objection"],c:["CWE-287"]}
+    ]
+  },
+  { id:"M02:2025", title:"Inadequate Supply Chain Security",
+    desc:"Risks from third-party libraries, SDKs, and build pipeline integrity failures that introduce vulnerabilities or malicious code into the application.",
+    tests:[
+      {n:"Third-Party SDK Vulnerabilities",d:"Identify all third-party SDKs bundled in the APK and check for known vulnerabilities using dependency scanning tools against CVE databases.",s:"high",t:["MobSF","OWASP DC","Snyk"],c:["CWE-1104"]},
+      {n:"Malicious Library Detection",d:"Analyze included libraries for suspicious behaviors: data exfiltration, hidden backdoors, obfuscated code, or unexpected network connections.",s:"high",t:["MobSF","jadx","VirusTotal"],c:["CWE-829"]},
+      {n:"Outdated Dependencies in build.gradle",d:"Extract dependency versions from the APK or build files and check for outdated libraries with known security vulnerabilities.",s:"med",t:["OWASP DC","Snyk","gradle"],c:["CWE-1104"]},
+      {n:"Code Signing Verification",d:"Verify APK signature integrity, check for debug certificates in production builds, and validate the signing certificate chain.",s:"med",t:["apksigner","jarsigner","MobSF"],c:["CWE-345"]},
+      {n:"ProGuard/R8 Obfuscation Check",d:"Verify that code obfuscation is applied to production builds. Check if critical business logic or security code can be easily reverse-engineered.",s:"med",t:["jadx","apktool"],c:["CWE-656"]},
+      {n:"Dependency Confusion in Maven/Gradle",d:"Check if the app uses private Maven repositories that could be vulnerable to dependency confusion by registering similarly named public packages.",s:"high",t:["gradle","Manual"],c:["CWE-829"]}
+    ]
+  },
+  { id:"M03:2025", title:"Insecure Authentication/Authorization",
+    desc:"Weak authentication mechanisms and improper authorization checks allow attackers to bypass security controls, access other users' data, or escalate privileges.",
+    tests:[
+      {n:"Bypassing Local Authentication",d:"Hook authentication methods with Frida to bypass PIN, pattern, or password checks. Test if auth decisions are made purely client-side.",s:"high",t:["Frida","objection"],c:["CWE-287"]},
+      {n:"Insecure Biometric Implementation",d:"Test if biometric authentication properly validates against server-side tokens or relies solely on local CryptoObject validation that can be bypassed.",s:"high",t:["Frida","objection"],c:["CWE-287"]},
+      {n:"Missing Server-Side Auth Validation",d:"Test if the app validates authentication tokens server-side or trusts client-side auth state. Replay expired or modified tokens to verify.",s:"high",t:["Burp Suite","Frida"],c:["CWE-603"]},
+      {n:"Intent-Based Auth Bypass",d:"Send crafted intents to exported activities to bypass authentication screens and directly access protected functionality.",s:"high",t:["adb","drozer"],c:["CWE-284"]},
+      {n:"Exported Activity/Service Access",d:"Enumerate exported components (activities, services, receivers) and test if any provide unauthorized access to protected functionality.",s:"high",t:["drozer","adb","MobSF"],c:["CWE-926"]},
+      {n:"Content Provider Permission Bypass",d:"Query exported content providers to check if sensitive data can be accessed without proper permissions or authentication.",s:"high",t:["drozer","adb"],c:["CWE-284"]}
+    ]
+  },
+  { id:"M04:2025", title:"Insufficient Input/Output Validation",
+    desc:"Failure to properly validate, sanitize, and encode data at input and output boundaries leads to injection attacks and data manipulation.",
+    tests:[
+      {n:"SQL Injection in Content Providers",d:"Inject SQL payloads into content provider query parameters (selection, projection) to extract or manipulate the underlying SQLite database.",s:"high",t:["drozer","adb"],c:["CWE-89"]},
+      {n:"Intent Injection/Spoofing",d:"Craft malicious intents with manipulated extras, actions, or data URIs to trigger unintended behavior in intent-receiving components.",s:"high",t:["drozer","adb"],c:["CWE-940"]},
+      {n:"WebView JavaScript Injection",d:"Test WebViews with JavaScript enabled for XSS by injecting scripts through URL parameters, intent data, or intercepted web content.",s:"high",t:["Frida","Burp Suite"],c:["CWE-79"]},
+      {n:"Deep Link URI Validation",d:"Test deep link/app link handlers with malformed or crafted URIs to bypass validation and access unintended app functionality.",s:"high",t:["adb","drozer"],c:["CWE-939"]},
+      {n:"Broadcast Receiver Input Validation",d:"Send crafted broadcasts to exported receivers with malicious data to test for improper input validation and unintended side effects.",s:"med",t:["drozer","adb"],c:["CWE-925"]},
+      {n:"File Path Traversal via Content Providers",d:"Attempt path traversal through content provider openFile() implementations to read arbitrary files from the app's private directory.",s:"high",t:["drozer","adb"],c:["CWE-22"]}
+    ]
+  },
+  { id:"M05:2025", title:"Insecure Communication",
+    desc:"Sensitive data transmitted over unprotected channels or with weak TLS configurations can be intercepted by attackers on shared networks.",
+    tests:[
+      {n:"Cleartext Traffic Detection",d:"Check AndroidManifest for android:usesCleartextTraffic=true and network_security_config for cleartext domains. Monitor for HTTP connections.",s:"high",t:["MobSF","Burp Suite","adb"],c:["CWE-319"]},
+      {n:"Certificate Pinning Bypass",d:"Attempt to bypass certificate pinning using Frida scripts or objection to intercept HTTPS traffic with a proxy certificate.",s:"high",t:["Frida","objection","Burp Suite"],c:["CWE-295"]},
+      {n:"Weak TLS Configuration",d:"Test for support of weak TLS versions (1.0/1.1), weak cipher suites, or missing certificate validation in custom TrustManagers.",s:"high",t:["testssl.sh","Burp Suite"],c:["CWE-327"]},
+      {n:"Man-in-the-Middle on Custom Protocols",d:"Intercept non-HTTP protocols (MQTT, WebSocket, custom TCP) to check if they implement proper encryption and certificate validation.",s:"high",t:["Wireshark","mitmproxy"],c:["CWE-300"]},
+      {n:"WebSocket Security",d:"Test WebSocket connections for lack of TLS (ws:// vs wss://), missing origin validation, and sensitive data transmitted in plaintext.",s:"med",t:["Burp Suite","Wireshark"],c:["CWE-319"]},
+      {n:"Improper Certificate Validation",d:"Check for custom X509TrustManager implementations that accept all certificates or skip hostname verification, enabling MITM attacks.",s:"high",t:["jadx","MobSF","Frida"],c:["CWE-295"]}
+    ]
+  },
+  { id:"M06:2025", title:"Inadequate Privacy Controls",
+    desc:"Excessive data collection, improper handling of PII, and insufficient privacy controls expose user data to unauthorized access and regulatory violations.",
+    tests:[
+      {n:"Excessive Permissions",d:"Review AndroidManifest for unnecessary permissions (camera, contacts, location, SMS) that exceed the app's functional requirements.",s:"med",t:["MobSF","adb"],c:["CWE-250"]},
+      {n:"PII in Application Logs",d:"Monitor logcat during app usage for personally identifiable information (names, emails, phone numbers, locations) being written to system logs.",s:"high",t:["adb","pidcat"],c:["CWE-532"]},
+      {n:"Clipboard Data Leakage",d:"Test if the app copies sensitive data to the clipboard where other apps can access it. Check for clipboard listener implementations.",s:"med",t:["adb","Frida"],c:["CWE-200"]},
+      {n:"Analytics/Tracking Data Exposure",d:"Intercept network traffic to identify analytics and tracking SDKs sending excessive user data, device fingerprints, or behavioral data to third parties.",s:"med",t:["Burp Suite","mitmproxy"],c:["CWE-359"]},
+      {n:"Screenshot/Task Switcher Leakage",d:"Check if the app prevents screenshots of sensitive screens (FLAG_SECURE) and if the task switcher thumbnail reveals sensitive data.",s:"med",t:["adb","Manual"],c:["CWE-200"]},
+      {n:"Backup Data Exposure (allowBackup)",d:"Check if android:allowBackup=true allows extracting app data via adb backup, exposing databases, shared preferences, and cached files.",s:"high",t:["adb","MobSF"],c:["CWE-530"]}
+    ]
+  },
+  { id:"M07:2025", title:"Insufficient Binary Protections",
+    desc:"Lack of runtime protections, anti-tampering controls, and obfuscation allows attackers to reverse-engineer, modify, and repackage the application.",
+    tests:[
+      {n:"Reverse Engineering with jadx/apktool",d:"Decompile the APK to analyze source code, identify business logic, hardcoded secrets, and security mechanisms that can be circumvented.",s:"high",t:["jadx","apktool","MobSF"],c:["CWE-693"]},
+      {n:"Runtime Manipulation with Frida",d:"Use Frida to hook and modify application methods at runtime — bypass security checks, modify return values, and manipulate app behavior.",s:"high",t:["Frida","objection"],c:["CWE-693"]},
+      {n:"Root Detection Bypass",d:"Identify root detection mechanisms and bypass them using Frida hooks, Magisk Hide, or by patching and repackaging the APK.",s:"high",t:["Frida","Magisk","objection"],c:["CWE-693"]},
+      {n:"Debuggable Flag Check",d:"Verify android:debuggable is false in production builds. A debuggable app allows attaching debuggers and inspecting runtime state.",s:"high",t:["MobSF","adb","jadx"],c:["CWE-489"]},
+      {n:"Anti-Tampering Mechanism Bypass",d:"Test if the app validates its own integrity (signature, checksum). Modify the APK, resign it, and check if tampering is detected.",s:"med",t:["apktool","jarsigner","Frida"],c:["CWE-693"]},
+      {n:"Dynamic Instrumentation Detection",d:"Check if the app detects Frida, Xposed, or other instrumentation frameworks. Test bypass techniques for each detection method.",s:"med",t:["Frida","objection"],c:["CWE-693"]}
+    ]
+  },
+  { id:"M08:2025", title:"Security Misconfiguration",
+    desc:"Insecure default settings, debug features left enabled, overly permissive component exports, and improper platform security configurations.",
+    tests:[
+      {n:"Debug Mode Enabled in Production",d:"Check for android:debuggable=true, StrictMode enabled, debug logging, or test/staging configurations left active in the production APK.",s:"high",t:["MobSF","jadx","adb"],c:["CWE-489"]},
+      {n:"Exported Components Without Permissions",d:"Identify activities, services, receivers, and providers exported without required permissions, allowing any app to interact with them.",s:"high",t:["drozer","MobSF","adb"],c:["CWE-926"]},
+      {n:"Insecure WebView Settings",d:"Check for dangerous WebView settings: JavaScript enabled with addJavascriptInterface, file access enabled, universal access from file URLs.",s:"high",t:["jadx","MobSF","Frida"],c:["CWE-749"]},
+      {n:"World-Readable/Writable Files",d:"Check file permissions in the app's private directory for files created with MODE_WORLD_READABLE or MODE_WORLD_WRITABLE allowing other apps access.",s:"high",t:["adb","drozer"],c:["CWE-732"]},
+      {n:"Insecure Network Security Config",d:"Review network_security_config.xml for overly permissive settings: trusting user certificates, cleartext traffic allowed, or missing certificate pins.",s:"high",t:["MobSF","jadx"],c:["CWE-295"]},
+      {n:"Improper Intent Filter Configuration",d:"Check for overly broad intent filters that could allow malicious apps to intercept implicit intents or inject data into the application.",s:"med",t:["drozer","MobSF","jadx"],c:["CWE-927"]}
+    ]
+  },
+  { id:"M09:2025", title:"Insecure Data Storage",
+    desc:"Sensitive data stored insecurely on the device — in databases, files, logs, or caches — can be extracted by attackers with physical or root access.",
+    tests:[
+      {n:"Sensitive Data in SQLite Databases",d:"Extract and examine SQLite databases in the app's data directory for unencrypted passwords, tokens, PII, or financial data.",s:"high",t:["adb","sqlite3","MobSF"],c:["CWE-312"]},
+      {n:"Data in External Storage",d:"Check if the app writes sensitive data to external storage (/sdcard/) where any app with storage permission can read it.",s:"high",t:["adb","MobSF"],c:["CWE-922"]},
+      {n:"SharedPreferences Encryption Check",d:"Verify that sensitive data in SharedPreferences is encrypted using EncryptedSharedPreferences or equivalent, not stored in plaintext XML.",s:"high",t:["adb","Frida"],c:["CWE-312"]},
+      {n:"Cache/Temp File Exposure",d:"Examine the app's cache directory and temp files for sensitive data remnants, cached API responses, or WebView cache with auth tokens.",s:"med",t:["adb","MobSF"],c:["CWE-524"]},
+      {n:"Keyboard Cache/Autocomplete Leakage",d:"Check if sensitive input fields disable autocomplete/suggestions that cache typed data in the system keyboard dictionary.",s:"med",t:["adb","Manual"],c:["CWE-200"]},
+      {n:"Room/Realm Database Encryption",d:"Check if Room or Realm databases storing sensitive data use encryption (SQLCipher for Room, Realm encryption key) rather than plaintext storage.",s:"high",t:["adb","Frida","objection"],c:["CWE-311"]}
+    ]
+  },
+  { id:"M10:2025", title:"Insufficient Cryptography",
+    desc:"Use of weak, broken, or improperly implemented cryptographic algorithms that fail to protect sensitive data at rest or in transit.",
+    tests:[
+      {n:"Weak Encryption Algorithms",d:"Identify use of DES, 3DES, RC4, MD5, or SHA-1 in the app's code for encryption or hashing where stronger algorithms (AES-256, SHA-256) should be used.",s:"high",t:["jadx","MobSF"],c:["CWE-327"]},
+      {n:"Hardcoded Encryption Keys",d:"Search decompiled code and resources for hardcoded symmetric keys, IVs, or salts used in cryptographic operations.",s:"high",t:["jadx","MobSF","Frida"],c:["CWE-321"]},
+      {n:"Insecure Random Number Generation",d:"Check if java.util.Random is used instead of SecureRandom for generating tokens, IVs, salts, or other security-sensitive random values.",s:"high",t:["jadx","MobSF"],c:["CWE-338"]},
+      {n:"Improper IV/Nonce Usage",d:"Check for static/reused IVs or nonces in AES-CBC/GCM operations. Reused IVs compromise confidentiality and enable pattern detection.",s:"high",t:["jadx","Frida"],c:["CWE-329"]},
+      {n:"ECB Mode Detection",d:"Identify use of AES in ECB mode which preserves data patterns. Verify CBC, GCM, or other secure modes are used for block cipher operations.",s:"med",t:["jadx","MobSF"],c:["CWE-327"]},
+      {n:"Custom Crypto Implementation Review",d:"Identify any custom cryptographic implementations instead of standard library usage. Custom crypto is almost always weaker than vetted implementations.",s:"high",t:["jadx","Manual"],c:["CWE-327"]}
+    ]
+  },
+];
+
+const SK='kenziy_owasp_mobile_android_2025';
+let S=JSON.parse(localStorage.getItem(SK)||'{}');
+function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+function ok(id,i){ return !!(S[id]&&S[id][i]); }
+function toggle(id,i){
+  if(!S[id]) S[id]={};
+  S[id][i]=!S[id][i];
+  save(); render(id); prog();
+}
+function sc(s){ return s==='high'?'s-high':s==='med'?'s-med':s==='low'?'s-low':'s-info'; }
+function tc(s){ return s==='high'?'t-high':s==='med'?'t-med':'t-low'; }
+function sl(s){ return s==='high'?'HIGH':s==='med'?'MED':s==='low'?'LOW':'INFO'; }
+function cid(id){ return id.replace(':','_'); }
+
+function build(){
+  const m=document.getElementById('main');
+  m.innerHTML='';
+  CATS.forEach(cat=>{
+    const el=document.createElement('div');
+    el.className='category'; el.id='c_'+cid(cat.id);
+    el.innerHTML=`<div class="cat-header" onclick="toggleC('${cat.id}')">
+      <span class="cat-prompt">$</span>
+      <span class="cat-id">${cat.id}</span>
+      <span class="cat-title">${cat.title}</span>
+      <span class="cat-stats"><span class="done" id="sd_${cid(cat.id)}">0</span>/${cat.tests.length}</span>
+      <span class="cat-chevron">▼</span>
+    </div>
+    <div class="cat-body">
+      <div class="cat-desc">${cat.desc}</div>
+      <div class="test-list" id="tl_${cid(cat.id)}"></div>
+    </div>`;
+    m.appendChild(el);
+    render(cat.id);
+  });
+}
+
+function render(id){
+  const cat=CATS.find(c=>c.id===id);
+  const list=document.getElementById('tl_'+cid(id));
+  if(!list) return;
+  let dc=0;
+  list.innerHTML=cat.tests.map((t,i)=>{
+    const done=ok(id,i); if(done) dc++;
+    return `<div class="test-item${done?' done':''}" onclick="toggle('${id}',${i})">
+      <div class="sev-bar ${sc(t.s)}"></div>
+      <div class="check-box">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="test-content">
+        <div class="test-name">${t.n}</div>
+        <div class="test-detail">${t.d}</div>
+        <div class="test-tags">
+          <span class="tag ${tc(t.s)}">${sl(t.s)}</span>
+          ${t.t.map(x=>`<span class="tag t-tool">${x}</span>`).join('')}
+          ${t.c.map(x=>`<span class="tag t-cwe">${x}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  const s=document.getElementById('sd_'+cid(id));
+  if(s) s.textContent=dc;
+}
+
+function prog(){
+  let tot=0,dn=0;
+  CATS.forEach(c=>c.tests.forEach((_,i)=>{ tot++; if(ok(c.id,i)) dn++; }));
+  document.getElementById('doneCount').textContent=dn;
+  document.getElementById('totalCount').textContent=tot;
+  const p=tot?Math.round(dn/tot*100):0;
+  document.getElementById('progressFill').style.width=p+'%';
+  document.getElementById('percentText').textContent=p+'%';
+}
+
+function toggleC(id){ document.getElementById('c_'+cid(id)).classList.toggle('collapsed'); }
+function expandAll(){  document.querySelectorAll('.category').forEach(c=>c.classList.remove('collapsed')); }
+function collapseAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.add('collapsed')); }
+
+function setF(id){ ['fAll','fPending','fDone'].forEach(f=>document.getElementById(f).classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function filterAll(){     document.querySelectorAll('.category').forEach(c=>c.classList.remove('hidden')); setF('fAll'); }
+function filterPending(){ CATS.forEach(c=>{ const all=c.tests.every((_,i)=>ok(c.id,i)); document.getElementById('c_'+cid(c.id)).classList.toggle('hidden',all); }); setF('fPending'); }
+function filterDone(){    CATS.forEach(c=>{ const all=c.tests.every((_,i)=>ok(c.id,i)); document.getElementById('c_'+cid(c.id)).classList.toggle('hidden',!all); }); setF('fDone'); }
+function resetAll(){ if(!confirm('reset all progress?')) return; S={}; save(); build(); prog(); }
+
+build(); prog();
+</script>
+</body>
+</html>

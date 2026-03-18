@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>~/kenziy — Network Penetration Testing Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#000000; --surface:#0a0a0a; --border:#1a1a1a; --border2:#222222; --green:#00ff41; --green2:rgba(0,255,65,0.12); --green-glow:0 0 8px rgba(0,255,65,0.35); --red:#ff3333; --yellow:#ffcc00; --cyan:#00e5ff; --gray:#444444; --text:#c8c8c8; --text-dim:#555555; --mono:'Share Tech Mono','Courier New',monospace; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px); pointer-events: none; z-index: 9999; }
+  .navbar { border-bottom: 1px solid var(--border2); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: var(--bg); position: sticky; top: 0; z-index: 200; }
+  .nav-brand { color: var(--green); font-size: 15px; text-decoration: none; text-shadow: var(--green-glow); }
+  .nav-brand .dim { color: var(--text-dim); }
+  .nav-links { display: flex; gap: 18px; list-style: none; flex-wrap: wrap; }
+  .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 12px; transition: color 0.12s; }
+  .nav-links a:hover { color: var(--green); }
+  .header { padding: 24px 24px 18px; border-bottom: 1px solid var(--border2); }
+  .header-path { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+  .header-path .hl { color: var(--green); }
+  .header-title { font-size: clamp(15px, 3.5vw, 22px); color: var(--green); text-shadow: var(--green-glow); margin-bottom: 4px; }
+  .header-title .prompt { color: var(--text-dim); }
+  .header-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 18px; }
+  .header-sub a { color: var(--cyan); text-decoration: none; }
+  .header-sub a:hover { text-decoration: underline; }
+  .progress-wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .progress-label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .progress-label strong { color: var(--green); font-size: 16px; text-shadow: var(--green-glow); }
+  .progress-track { flex: 1; min-width: 100px; max-width: 280px; height: 4px; background: var(--border2); }
+  .progress-fill { height: 100%; background: var(--green); box-shadow: var(--green-glow); transition: width 0.3s ease; }
+  .progress-pct { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+  .cursor { display: inline-block; width: 9px; height: 15px; background: var(--green); vertical-align: middle; margin-left: 3px; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .controls { padding: 10px 24px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border2); }
+  .target-input { font-family: var(--mono); font-size: 12px; padding: 5px 10px; background: var(--surface); border: 1px solid var(--border2); color: var(--green); outline: none; width: clamp(140px, 30vw, 240px); caret-color: var(--green); transition: border-color 0.12s; }
+  .target-input::placeholder { color: var(--text-dim); }
+  .target-input:focus { border-color: var(--green); }
+  .sep { width: 1px; height: 18px; background: var(--border2); flex-shrink: 0; }
+  .btn { font-family: var(--mono); font-size: 11px; padding: 5px 11px; background: transparent; border: 1px solid var(--border2); color: var(--text-dim); cursor: pointer; letter-spacing: 0.3px; transition: all 0.12s; white-space: nowrap; }
+  .btn:hover { border-color: var(--green); color: var(--green); }
+  .btn.active { border-color: var(--green); color: var(--green); background: var(--green2); }
+  .btn.danger { color: var(--red); border-color: rgba(255,51,51,0.2); }
+  .btn.danger:hover { background: rgba(255,51,51,0.07); border-color: var(--red); }
+  .main { padding: 18px 24px 64px; max-width: 960px; margin: 0 auto; }
+  .category { margin-bottom: 14px; border: 1px solid var(--border2); }
+  .cat-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); cursor: pointer; user-select: none; transition: background 0.1s; flex-wrap: nowrap; overflow: hidden; }
+  .cat-header:hover { background: #0f0f0f; }
+  .cat-prompt { color: var(--text-dim); font-size: 13px; flex-shrink: 0; }
+  .cat-id { color: var(--green); font-size: 12px; flex-shrink: 0; text-shadow: var(--green-glow); }
+  .cat-title { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cat-stats { font-size: 11px; color: var(--text-dim); flex-shrink: 0; margin-left: 8px; }
+  .cat-stats .done { color: var(--green); }
+  .cat-chevron { color: var(--text-dim); font-size: 10px; transition: transform 0.16s; flex-shrink: 0; }
+  .category.collapsed .cat-chevron { transform: rotate(-90deg); }
+  .category.collapsed .cat-body { display: none; }
+  .cat-desc { padding: 8px 14px; font-size: 11px; color: var(--text-dim); border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.5); line-height: 1.7; }
+  .cat-desc::before { content: '# '; color: var(--border2); }
+  .test-item { display: grid; grid-template-columns: 3px 18px 1fr; gap: 0 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.08s; align-items: start; }
+  .test-item:last-child { border-bottom: none; }
+  .test-item:hover { background: rgba(0,255,65,0.025); }
+  .test-item.done { background: rgba(0,255,65,0.015); }
+  .test-item.done .test-name { color: var(--text-dim); text-decoration: line-through; text-decoration-color: rgba(0,255,65,0.2); }
+  .test-item.done .test-detail { opacity: 0.38; }
+  .sev-bar { align-self: stretch; min-height: 16px; }
+  .s-high { background: var(--red); box-shadow: 0 0 5px rgba(255,51,51,0.4); }
+  .s-med { background: var(--yellow); box-shadow: 0 0 5px rgba(255,204,0,0.35); }
+  .s-low { background: var(--cyan); box-shadow: 0 0 5px rgba(0,229,255,0.3); }
+  .s-info { background: var(--gray); }
+  .check-box { width: 14px; height: 14px; border: 1px solid var(--gray); display: flex; align-items: center; justify-content: center; margin-top: 2px; flex-shrink: 0; transition: all 0.12s; }
+  .test-item:hover .check-box { border-color: var(--green); }
+  .test-item.done .check-box { background: var(--green); border-color: var(--green); box-shadow: var(--green-glow); }
+  .check-box svg { display: none; }
+  .test-item.done .check-box svg { display: block; }
+  .test-content { min-width: 0; }
+  .test-name { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+  .test-name::before { content: '> '; color: var(--text-dim); }
+  .test-detail { font-size: 11px; color: var(--text-dim); line-height: 1.65; margin-bottom: 6px; }
+  .test-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-size: 9px; padding: 2px 6px; border: 1px solid; letter-spacing: 0.5px; text-transform: uppercase; }
+  .t-high { color: var(--red); border-color: rgba(255,51,51,0.3); background: rgba(255,51,51,0.05); }
+  .t-med { color: var(--yellow); border-color: rgba(255,204,0,0.3); background: rgba(255,204,0,0.04); }
+  .t-low { color: var(--cyan); border-color: rgba(0,229,255,0.25); background: rgba(0,229,255,0.04); }
+  .t-tool { color: var(--green); border-color: rgba(0,255,65,0.2); background: rgba(0,255,65,0.04); }
+  .t-cwe { color: #666; border-color: rgba(100,100,100,0.2); background: transparent; }
+  footer { text-align: center; padding: 18px 24px; font-size: 11px; color: var(--text-dim); border-top: 1px solid var(--border2); }
+  footer a { color: var(--green); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) { .navbar{padding:10px 14px} .header{padding:16px 14px 14px} .controls{padding:8px 14px} .main{padding:12px 14px 52px} .cat-header{padding:9px 12px;gap:6px} .cat-desc{padding:7px 12px} .test-item{padding:9px 12px;gap:0 10px} .test-name{font-size:12px} .btn{font-size:10px;padding:5px 8px} .target-input{width:100%} .sep{display:none} .progress-track{min-width:70px} .nav-links{gap:10px} }
+  @media (max-width: 380px) { .nav-links{display:none} .header-title{font-size:13px} .cat-title{font-size:12px} }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="https://kenziy.com"><span class="dim">~/</span>kenziy</a>
+  <ul class="nav-links">
+    <li><a href="https://kenziy.com/#about">about</a></li>
+    <li><a href="https://kenziy.com/#targets">targets</a></li>
+    <li><a href="https://kenziy.com/#cves">cves</a></li>
+    <li><a href="https://kenziy.com/#certs">certs</a></li>
+    <li><a href="https://hackerone.com/kenziy" target="_blank">hackerone</a></li>
+  </ul>
+</nav>
+
+<div class="header">
+  <div class="header-path">~/kenziy/<span class="hl">network-checklist</span></div>
+  <div class="header-title"><span class="prompt">$ </span>Network Penetration Testing Checklist<span class="cursor"></span></div>
+  <div class="header-sub">
+    source: <a href="https://owasp.org/www-project-web-security-testing-guide/" target="_blank">PTES / OSSTMM</a>
+    &nbsp;·&nbsp; authorized penetration testing only
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><strong id="doneCount">0</strong> / <span id="totalCount">0</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-pct" id="percentText">0%</div>
+  </div>
+</div>
+
+<div class="controls">
+  <input class="target-input" type="text" id="targetInput" placeholder="target: 10.0.0.0/24" />
+  <div class="sep"></div>
+  <button class="btn" onclick="expandAll()">expand_all</button>
+  <button class="btn" onclick="collapseAll()">collapse_all</button>
+  <div class="sep"></div>
+  <button class="btn active" id="fAll" onclick="filterAll()">--all</button>
+  <button class="btn" id="fPending" onclick="filterPending()">--pending</button>
+  <button class="btn" id="fDone" onclick="filterDone()">--done</button>
+  <div class="sep"></div>
+  <button class="btn danger" onclick="resetAll()">reset</button>
+</div>
+
+<main class="main" id="main"></main>
+
+<footer>
+  <a href="https://kenziy.com">~/kenziy</a> &nbsp;·&nbsp;
+  <a href="https://owasp.org/www-project-web-security-testing-guide/" target="_blank">PTES / OSSTMM</a> &nbsp;·&nbsp;
+  <a href="https://hackerone.com/kenziy" target="_blank">HackerOne</a> &nbsp;·&nbsp; for authorized use only
+</footer>
+
+<script>
+const CATS = [
+  { id:"N01", title:"Reconnaissance & OSINT",
+    desc:"Passive and active information gathering to map the target's attack surface, identify assets, and collect intelligence before active testing begins.",
+    tests:[
+      {n:"Passive DNS Enumeration",d:"Collect DNS records (A, AAAA, MX, NS, TXT, CNAME) passively using public DNS databases and historical records without querying the target directly.",s:"low",t:["theHarvester","Amass","DNSdumpster"],c:["CWE-200"]},
+      {n:"WHOIS/ASN Mapping",d:"Query WHOIS databases and BGP routing tables to identify IP ranges, ASN ownership, registrant information, and related network blocks.",s:"low",t:["whois","BGPView","Amass"],c:["CWE-200"]},
+      {n:"Subdomain Discovery",d:"Enumerate subdomains through certificate transparency logs, DNS brute-forcing, and search engine dorking to map the full domain infrastructure.",s:"med",t:["Amass","Subfinder","crt.sh"],c:["CWE-200"]},
+      {n:"Email Harvesting",d:"Collect email addresses associated with the target domain from public sources, social media, data breaches, and PGP key servers.",s:"low",t:["theHarvester","Hunter.io"],c:["CWE-200"]},
+      {n:"Social Engineering Intel Gathering",d:"Gather employee names, roles, technologies used, and organizational structure from LinkedIn, job postings, and company publications.",s:"low",t:["LinkedIn","theHarvester"],c:["CWE-200"]},
+      {n:"Certificate Transparency Log Mining",d:"Search CT logs for all certificates issued to the target domain to discover subdomains, internal hostnames, and infrastructure details.",s:"low",t:["crt.sh","Censys","Amass"],c:["CWE-200"]},
+      {n:"Shodan/Censys Reconnaissance",d:"Search internet-wide scan databases for exposed services, default banners, known vulnerabilities, and misconfigured devices on the target's IP ranges.",s:"med",t:["Shodan","Censys"],c:["CWE-200"]}
+    ]
+  },
+  { id:"N02", title:"Network Scanning & Enumeration",
+    desc:"Active scanning to discover live hosts, open ports, running services, and operating systems on the target network.",
+    tests:[
+      {n:"TCP SYN/Connect Port Scanning",d:"Perform SYN stealth scans and full connect scans across all 65535 TCP ports to identify open services on target hosts.",s:"med",t:["Nmap","Masscan"],c:["CWE-200"]},
+      {n:"UDP Port Scanning",d:"Scan common UDP ports (DNS, SNMP, TFTP, NTP, DHCP) to discover services that may be overlooked by TCP-only scanning.",s:"med",t:["Nmap","Masscan"],c:["CWE-200"]},
+      {n:"Service Version Detection",d:"Identify service versions running on open ports using banner grabbing and probe-based detection to match against known vulnerability databases.",s:"med",t:["Nmap","Netcat"],c:["CWE-200"]},
+      {n:"OS Fingerprinting",d:"Determine operating systems of target hosts using TCP/IP stack behavior analysis, TTL values, and service banner characteristics.",s:"low",t:["Nmap","p0f"],c:["CWE-200"]},
+      {n:"Network Topology Mapping",d:"Map the network architecture including routers, switches, firewalls, and network segments using traceroute, SNMP walks, and ARP discovery.",s:"med",t:["Nmap","Wireshark"],c:["CWE-200"]},
+      {n:"SNMP Enumeration",d:"Test for SNMP with default community strings (public/private). Extract system information, network interfaces, routing tables, and connected devices.",s:"high",t:["snmpwalk","onesixtyone","Nmap"],c:["CWE-1392"]},
+      {n:"NetBIOS/SMB Enumeration",d:"Enumerate NetBIOS names, SMB shares, user accounts, group memberships, and domain information from Windows hosts on the network.",s:"high",t:["enum4linux","CrackMapExec","Nmap"],c:["CWE-200"]},
+      {n:"DNS Zone Transfer",d:"Attempt zone transfers (AXFR) against all authoritative DNS servers to obtain complete zone files revealing internal hostnames and network structure.",s:"high",t:["dig","Nmap","dnsrecon"],c:["CWE-200"]}
+    ]
+  },
+  { id:"N03", title:"Vulnerability Assessment",
+    desc:"Systematic identification and validation of known vulnerabilities in network services, configurations, and software versions.",
+    tests:[
+      {n:"Automated Vulnerability Scanning",d:"Run comprehensive vulnerability scans against discovered hosts and services to identify known CVEs, misconfigurations, and security weaknesses.",s:"high",t:["Nessus","OpenVAS","Nuclei"],c:["CWE-1035"]},
+      {n:"CVE Identification and Validation",d:"Cross-reference discovered service versions against CVE databases and manually validate critical findings to eliminate false positives.",s:"high",t:["Nessus","searchsploit","Nmap"],c:["CWE-1035"]},
+      {n:"Default Credential Testing",d:"Test all discovered services for default credentials using vendor-specific credential databases and common username/password combinations.",s:"high",t:["Hydra","CrackMapExec","Nmap"],c:["CWE-1392"]},
+      {n:"Missing Patches Identification",d:"Identify missing security patches on target systems through version comparison, patch-level enumeration, and authenticated vulnerability scanning.",s:"high",t:["Nessus","OpenVAS"],c:["CWE-1035"]},
+      {n:"Service-Specific Vulnerability Testing",d:"Test individual services (SSH, FTP, SMB, RDP, HTTP) for service-specific vulnerabilities, misconfigurations, and known exploit paths.",s:"high",t:["Nmap","Metasploit","Nuclei"],c:["CWE-1035"]},
+      {n:"SSL/TLS Vulnerability Assessment",d:"Test for SSL/TLS vulnerabilities: Heartbleed, POODLE, BEAST, CRIME, ROBOT, weak ciphers, expired certificates, and protocol downgrade attacks.",s:"med",t:["testssl.sh","Nmap","sslyze"],c:["CWE-327"]}
+    ]
+  },
+  { id:"N04", title:"Network Service Exploitation",
+    desc:"Attempting to exploit discovered vulnerabilities in network services to gain unauthorized access, execute code, or extract sensitive data.",
+    tests:[
+      {n:"SSH Brute Force/Misconfiguration",d:"Test SSH for weak passwords, key-based auth bypass, version-specific exploits, and insecure configurations (root login, weak ciphers, agent forwarding).",s:"high",t:["Hydra","Metasploit","Nmap"],c:["CWE-307"]},
+      {n:"FTP Anonymous Access/Exploits",d:"Check for anonymous FTP access, writable directories, version-specific exploits, and sensitive files accessible through FTP services.",s:"high",t:["Nmap","Metasploit","Hydra"],c:["CWE-284"]},
+      {n:"SMB/CIFS Exploitation",d:"Test for SMB vulnerabilities (EternalBlue/MS17-010, SMBGhost), null sessions, writable shares, and relay attacks on SMB services.",s:"high",t:["CrackMapExec","Metasploit","Impacket"],c:["CWE-284"]},
+      {n:"RDP Vulnerabilities",d:"Test for RDP vulnerabilities (BlueKeep/CVE-2019-0708), weak credentials, NLA bypass, and session hijacking on exposed Remote Desktop services.",s:"high",t:["Metasploit","Hydra","Nmap"],c:["CWE-284"]},
+      {n:"SMTP Relay Testing",d:"Test SMTP servers for open relay configuration, user enumeration via VRFY/EXPN/RCPT TO, and email spoofing from the target's mail infrastructure.",s:"med",t:["Nmap","swaks","smtp-user-enum"],c:["CWE-284"]},
+      {n:"Database Service Exploitation",d:"Test exposed database services (MySQL 3306, MSSQL 1433, PostgreSQL 5432) for default credentials, command execution, and data extraction.",s:"high",t:["Metasploit","Hydra","CrackMapExec"],c:["CWE-284"]},
+      {n:"Web Server Exploitation",d:"Test web servers for known vulnerabilities in Apache, Nginx, IIS, and application frameworks. Exploit discovered CVEs to gain initial access.",s:"high",t:["Metasploit","Nuclei","Burp Suite"],c:["CWE-1035"]}
+    ]
+  },
+  { id:"N05", title:"Active Directory Attacks",
+    desc:"Targeted attacks against Active Directory environments to escalate privileges, move laterally, and compromise domain infrastructure.",
+    tests:[
+      {n:"LLMNR/NBT-NS Poisoning",d:"Poison LLMNR and NBT-NS broadcast requests to capture NTLMv2 hashes from hosts attempting to resolve non-existent hostnames on the network.",s:"high",t:["Responder","Inveigh"],c:["CWE-300"]},
+      {n:"Kerberoasting",d:"Request TGS tickets for service accounts with SPNs and crack them offline to obtain service account passwords for lateral movement.",s:"high",t:["Impacket","Rubeus","Hashcat"],c:["CWE-916"]},
+      {n:"AS-REP Roasting",d:"Identify accounts with Kerberos pre-authentication disabled and request AS-REP tickets that can be cracked offline to recover passwords.",s:"high",t:["Impacket","Rubeus","Hashcat"],c:["CWE-916"]},
+      {n:"Pass-the-Hash / Pass-the-Ticket",d:"Use captured NTLM hashes or Kerberos tickets to authenticate to other systems without knowing the plaintext password, enabling lateral movement.",s:"high",t:["Impacket","CrackMapExec","Mimikatz"],c:["CWE-522"]},
+      {n:"DCSync Attack",d:"Use replication privileges to request password hashes from the domain controller, simulating domain controller replication to extract all domain credentials.",s:"high",t:["Mimikatz","Impacket"],c:["CWE-522"]},
+      {n:"BloodHound Path Analysis",d:"Map Active Directory relationships to identify attack paths from compromised accounts to Domain Admin using graph-based analysis of AD permissions.",s:"high",t:["BloodHound","SharpHound"],c:["CWE-284"]},
+      {n:"GPO Abuse",d:"Identify Group Policy Objects that grant excessive permissions and exploit misconfigured GPOs to execute code, modify settings, or escalate privileges.",s:"high",t:["BloodHound","SharpGPOAbuse"],c:["CWE-284"]},
+      {n:"NTLM Relay Attacks",d:"Relay captured NTLM authentication to other services (LDAP, SMB, HTTP) to execute commands, add users, or modify AD objects without cracking hashes.",s:"high",t:["Responder","ntlmrelayx","Impacket"],c:["CWE-294"]}
+    ]
+  },
+  { id:"N06", title:"Firewall & IDS/IPS Evasion",
+    desc:"Techniques to identify, enumerate, and bypass network security controls including firewalls, intrusion detection, and intrusion prevention systems.",
+    tests:[
+      {n:"Firewall Rule Enumeration",d:"Map firewall rules by testing which ports, protocols, and source IPs are allowed or blocked using targeted scanning and crafted packets.",s:"med",t:["Nmap","Hping3"],c:["CWE-693"]},
+      {n:"Packet Fragmentation Evasion",d:"Use IP fragmentation and TCP segmentation to split attack payloads across multiple packets, evading signature-based IDS detection.",s:"med",t:["Nmap","fragrouter","Scapy"],c:["CWE-693"]},
+      {n:"Protocol Tunneling (DNS/ICMP/HTTP)",d:"Tunnel traffic through allowed protocols (DNS, ICMP, HTTP) to bypass firewall restrictions and exfiltrate data through permitted channels.",s:"high",t:["dnscat2","iodine","Chisel"],c:["CWE-693"]},
+      {n:"IDS Signature Evasion Techniques",d:"Modify exploit payloads using encoding, encryption, polymorphism, and timing manipulation to evade IDS/IPS signature detection.",s:"med",t:["Metasploit","Scapy","Nmap"],c:["CWE-693"]},
+      {n:"Source Port Manipulation",d:"Use trusted source ports (53, 80, 443) in scans and connections to bypass firewall rules that whitelist traffic from well-known service ports.",s:"med",t:["Nmap","Hping3"],c:["CWE-693"]},
+      {n:"Decoy Scanning",d:"Use decoy IP addresses during scanning to obscure the true source of reconnaissance activity and confuse IDS alert correlation.",s:"low",t:["Nmap"],c:["CWE-693"]},
+      {n:"IPv6 Tunnel Abuse",d:"Test for IPv6 tunneling that bypasses IPv4-only security controls. Check for 6to4, Teredo, and ISATAP tunnels that may circumvent firewalls.",s:"med",t:["Nmap","thc-ipv6","Chisel"],c:["CWE-693"]}
+    ]
+  },
+  { id:"N07", title:"Man-in-the-Middle Attacks",
+    desc:"Network-level attacks that intercept, modify, or redirect traffic between communicating parties to capture credentials or manipulate data in transit.",
+    tests:[
+      {n:"ARP Spoofing/Poisoning",d:"Send spoofed ARP replies to associate the attacker's MAC address with the gateway IP, redirecting victim traffic through the attacker's machine.",s:"high",t:["Bettercap","arpspoof","Ettercap"],c:["CWE-300"]},
+      {n:"DNS Spoofing",d:"Intercept DNS queries and respond with attacker-controlled IP addresses to redirect victims to malicious servers or capture credentials.",s:"high",t:["Bettercap","dnsspoof","Responder"],c:["CWE-350"]},
+      {n:"DHCP Spoofing",d:"Deploy a rogue DHCP server to assign attacker-controlled DNS servers and gateway addresses to new clients joining the network.",s:"high",t:["Bettercap","Ettercap","Yersinia"],c:["CWE-300"]},
+      {n:"SSL Stripping",d:"Downgrade HTTPS connections to HTTP by intercepting redirect responses and rewriting URLs, capturing credentials transmitted in cleartext.",s:"high",t:["Bettercap","sslstrip","mitmproxy"],c:["CWE-757"]},
+      {n:"VLAN Hopping",d:"Exploit DTP or double-tagging techniques to send traffic across VLAN boundaries, accessing network segments that should be isolated.",s:"high",t:["Yersinia","Scapy","Frogger"],c:["CWE-284"]},
+      {n:"BGP Hijacking Simulation",d:"In authorized tests, simulate BGP route advertisements to demonstrate the risk of traffic interception through route hijacking.",s:"high",t:["ExaBGP","Manual"],c:["CWE-300"]},
+      {n:"HTTP Downgrade Attacks",d:"Force browsers to connect via HTTP instead of HTTPS by exploiting missing HSTS headers, HSTS preload absence, or cookie scope issues.",s:"high",t:["Bettercap","mitmproxy"],c:["CWE-757"]}
+    ]
+  },
+  { id:"N08", title:"Post-Exploitation",
+    desc:"Activities performed after gaining initial access to maximize impact, demonstrate risk, and identify additional vulnerabilities within the compromised environment.",
+    tests:[
+      {n:"Credential Harvesting from Memory",d:"Extract credentials from process memory (LSASS), cached credentials, saved passwords in browsers, and credential managers on compromised systems.",s:"high",t:["Mimikatz","CrackMapExec","LaZagne"],c:["CWE-522"]},
+      {n:"Lateral Movement Techniques",d:"Move between systems using harvested credentials, pass-the-hash, WMI execution, PsExec, SSH tunnels, or RDP to expand access within the network.",s:"high",t:["CrackMapExec","Impacket","Metasploit"],c:["CWE-284"]},
+      {n:"Persistence Mechanism Planting",d:"Establish persistent access through scheduled tasks, services, registry keys, startup items, or implanted backdoors to maintain access across reboots.",s:"high",t:["Metasploit","Manual"],c:["CWE-506"]},
+      {n:"Data Exfiltration Paths",d:"Identify and test data exfiltration channels: DNS tunneling, HTTPS, ICMP, encrypted archives, cloud storage, and steganography to bypass DLP controls.",s:"high",t:["dnscat2","Chisel","curl"],c:["CWE-200"]},
+      {n:"Privilege Escalation (Linux/Windows)",d:"Exploit misconfigurations (SUID, sudo, weak services, unquoted paths, DLL hijacking) to escalate from standard user to root/SYSTEM privileges.",s:"high",t:["LinPEAS","WinPEAS","Metasploit"],c:["CWE-269"]},
+      {n:"Pivoting Through Compromised Hosts",d:"Use compromised hosts as pivot points to access otherwise unreachable network segments through SSH tunnels, SOCKS proxies, or port forwarding.",s:"high",t:["Chisel","Metasploit","SSH"],c:["CWE-284"]},
+      {n:"Log Clearing/Anti-Forensics Detection",d:"Assess whether the target environment detects log clearing, timestomping, or other anti-forensics techniques that attackers use to cover their tracks.",s:"med",t:["Metasploit","Manual"],c:["CWE-778"]}
+    ]
+  },
+  { id:"N09", title:"VPN & Remote Access Testing",
+    desc:"Assessment of VPN configurations, remote access solutions, and the security of encrypted tunnels protecting remote network connectivity.",
+    tests:[
+      {n:"VPN Configuration Audit",d:"Review VPN server configuration for weak encryption algorithms, outdated protocols, split tunneling policies, and authentication mechanisms.",s:"high",t:["ike-scan","Nmap"],c:["CWE-327"]},
+      {n:"Split Tunneling Detection",d:"Determine if VPN clients use split tunneling that routes some traffic outside the encrypted tunnel, potentially exposing sensitive data.",s:"med",t:["Wireshark","Manual"],c:["CWE-319"]},
+      {n:"IPSec/IKE Aggressive Mode Testing",d:"Test IKE for aggressive mode which transmits the hash in cleartext, allowing offline PSK cracking. Check for weak DH groups and encryption.",s:"high",t:["ike-scan","Hashcat"],c:["CWE-327"]},
+      {n:"OpenVPN/WireGuard Misconfiguration",d:"Check OpenVPN for weak ciphers, missing TLS-auth, and certificate validation. Test WireGuard for proper key management and allowed-IPs configuration.",s:"med",t:["Nmap","Manual"],c:["CWE-16"]},
+      {n:"RDP Gateway Security",d:"Test RDP Gateway/RD Web Access for weak authentication, missing MFA, certificate issues, and NLA bypass vulnerabilities.",s:"high",t:["Nmap","Hydra","Metasploit"],c:["CWE-284"]},
+      {n:"SSH Tunneling Controls",d:"Test SSH configurations for port forwarding restrictions, agent forwarding security, and whether SSH tunnels can bypass network security controls.",s:"med",t:["SSH","Nmap"],c:["CWE-284"]},
+      {n:"Remote Desktop Protocol Weaknesses",d:"Test for RDP-specific vulnerabilities: CredSSP issues, session shadowing, clipboard redirection, drive sharing, and man-in-the-middle on RDP sessions.",s:"high",t:["Metasploit","seth","Nmap"],c:["CWE-284"]}
+    ]
+  },
+  { id:"N10", title:"Network Infrastructure",
+    desc:"Assessment of core network infrastructure devices, protocols, and configurations that form the backbone of the target's network.",
+    tests:[
+      {n:"Router/Switch Configuration Audit",d:"Review router and switch configurations for default credentials, unnecessary services, weak access controls, and insecure management protocols.",s:"high",t:["Nmap","CrackMapExec","Nessus"],c:["CWE-16"]},
+      {n:"VLAN Segregation Testing",d:"Verify that VLAN segmentation properly isolates network segments by testing for inter-VLAN routing bypasses and trunk port misconfigurations.",s:"high",t:["Yersinia","Nmap","Scapy"],c:["CWE-284"]},
+      {n:"Spanning Tree Protocol Attacks",d:"Test for STP manipulation by sending BPDU frames to become root bridge, potentially causing network disruption or traffic interception.",s:"med",t:["Yersinia","Scapy"],c:["CWE-284"]},
+      {n:"CDP/LLDP Information Disclosure",d:"Capture CDP and LLDP frames to extract network device information: model, firmware version, VLAN assignments, IP addresses, and capabilities.",s:"med",t:["Wireshark","Yersinia"],c:["CWE-200"]},
+      {n:"NTP Amplification Testing",d:"Test NTP servers for monlist/peers commands that can be abused for DDoS amplification attacks or information disclosure about network clients.",s:"med",t:["Nmap","ntpdc"],c:["CWE-406"]},
+      {n:"Logging and Monitoring Adequacy",d:"Assess whether network devices send logs to a central SIEM, if log integrity is maintained, and if alerting exists for security-relevant events.",s:"med",t:["Nmap","Manual"],c:["CWE-778"]},
+      {n:"Network Segmentation Validation",d:"Verify that critical network segments (DMZ, management, production, development) are properly segmented and that cross-segment traffic is controlled.",s:"high",t:["Nmap","Scapy","Wireshark"],c:["CWE-284"]}
+    ]
+  },
+];
+
+const SK='kenziy_network_pentest';
+let S=JSON.parse(localStorage.getItem(SK)||'{}');
+function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+function ok(id,i){ return !!(S[id]&&S[id][i]); }
+function toggle(id,i){ if(!S[id]) S[id]={}; S[id][i]=!S[id][i]; save(); render(id); prog(); }
+function sc(s){ return s==='high'?'s-high':s==='med'?'s-med':s==='low'?'s-low':'s-info'; }
+function tc(s){ return s==='high'?'t-high':s==='med'?'t-med':'t-low'; }
+function sl(s){ return s==='high'?'HIGH':s==='med'?'MED':s==='low'?'LOW':'INFO'; }
+function cid(id){ return id.replace(':','_'); }
+
+function build(){
+  const m=document.getElementById('main'); m.innerHTML='';
+  CATS.forEach(cat=>{
+    const el=document.createElement('div');
+    el.className='category'; el.id='c_'+cid(cat.id);
+    el.innerHTML=`<div class="cat-header" onclick="toggleC('${cat.id}')">
+      <span class="cat-prompt">$</span><span class="cat-id">${cat.id}</span>
+      <span class="cat-title">${cat.title}</span>
+      <span class="cat-stats"><span class="done" id="sd_${cid(cat.id)}">0</span>/${cat.tests.length}</span>
+      <span class="cat-chevron">▼</span></div>
+    <div class="cat-body"><div class="cat-desc">${cat.desc}</div>
+      <div class="test-list" id="tl_${cid(cat.id)}"></div></div>`;
+    m.appendChild(el); render(cat.id);
+  });
+}
+
+function render(id){
+  const cat=CATS.find(c=>c.id===id);
+  const list=document.getElementById('tl_'+cid(id)); if(!list) return;
+  let dc=0;
+  list.innerHTML=cat.tests.map((t,i)=>{
+    const done=ok(id,i); if(done) dc++;
+    return `<div class="test-item${done?' done':''}" onclick="toggle('${id}',${i})">
+      <div class="sev-bar ${sc(t.s)}"></div>
+      <div class="check-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+        <path d="M1 4L3.5 6.5L9 1" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="test-content"><div class="test-name">${t.n}</div><div class="test-detail">${t.d}</div>
+        <div class="test-tags"><span class="tag ${tc(t.s)}">${sl(t.s)}</span>
+          ${t.t.map(x=>`<span class="tag t-tool">${x}</span>`).join('')}
+          ${t.c.map(x=>`<span class="tag t-cwe">${x}</span>`).join('')}</div></div></div>`;
+  }).join('');
+  const s=document.getElementById('sd_'+cid(id)); if(s) s.textContent=dc;
+}
+
+function prog(){
+  let tot=0,dn=0;
+  CATS.forEach(c=>c.tests.forEach((_,i)=>{ tot++; if(ok(c.id,i)) dn++; }));
+  document.getElementById('doneCount').textContent=dn;
+  document.getElementById('totalCount').textContent=tot;
+  const p=tot?Math.round(dn/tot*100):0;
+  document.getElementById('progressFill').style.width=p+'%';
+  document.getElementById('percentText').textContent=p+'%';
+}
+
+function toggleC(id){ document.getElementById('c_'+cid(id)).classList.toggle('collapsed'); }
+function expandAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.remove('collapsed')); }
+function collapseAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.add('collapsed')); }
+function setF(id){ ['fAll','fPending','fDone'].forEach(f=>document.getElementById(f).classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function filterAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.remove('hidden')); setF('fAll'); }
+function filterPending(){ CATS.forEach(c=>{ const all=c.tests.every((_,i)=>ok(c.id,i)); document.getElementById('c_'+cid(c.id)).classList.toggle('hidden',all); }); setF('fPending'); }
+function filterDone(){ CATS.forEach(c=>{ const all=c.tests.every((_,i)=>ok(c.id,i)); document.getElementById('c_'+cid(c.id)).classList.toggle('hidden',!all); }); setF('fDone'); }
+function resetAll(){ if(!confirm('reset all progress?')) return; S={}; save(); build(); prog(); }
+
+build(); prog();
+</script>
+</body>
+</html>

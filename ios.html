@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>~/kenziy — OWASP Mobile Top 10:2025 iOS Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #000000;
+    --surface:  #0a0a0a;
+    --border:   #1a1a1a;
+    --border2:  #222222;
+    --green:    #00ff41;
+    --green2:   rgba(0,255,65,0.12);
+    --green-glow: 0 0 8px rgba(0,255,65,0.35);
+    --red:      #ff3333;
+    --yellow:   #ffcc00;
+    --cyan:     #00e5ff;
+    --gray:     #444444;
+    --text:     #c8c8c8;
+    --text-dim: #555555;
+    --mono:     'Share Tech Mono', 'Courier New', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px); pointer-events: none; z-index: 9999; }
+
+  .navbar { border-bottom: 1px solid var(--border2); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: var(--bg); position: sticky; top: 0; z-index: 200; }
+  .nav-brand { color: var(--green); font-size: 15px; text-decoration: none; text-shadow: var(--green-glow); }
+  .nav-brand .dim { color: var(--text-dim); }
+  .nav-links { display: flex; gap: 18px; list-style: none; flex-wrap: wrap; }
+  .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 12px; transition: color 0.12s; }
+  .nav-links a:hover { color: var(--green); }
+
+  .header { padding: 24px 24px 18px; border-bottom: 1px solid var(--border2); }
+  .header-path { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+  .header-path .hl { color: var(--green); }
+  .header-title { font-size: clamp(15px, 3.5vw, 22px); color: var(--green); text-shadow: var(--green-glow); margin-bottom: 4px; }
+  .header-title .prompt { color: var(--text-dim); }
+  .header-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 18px; }
+  .header-sub a { color: var(--cyan); text-decoration: none; }
+  .header-sub a:hover { text-decoration: underline; }
+
+  .progress-wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .progress-label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .progress-label strong { color: var(--green); font-size: 16px; text-shadow: var(--green-glow); }
+  .progress-track { flex: 1; min-width: 100px; max-width: 280px; height: 4px; background: var(--border2); }
+  .progress-fill { height: 100%; background: var(--green); box-shadow: var(--green-glow); transition: width 0.3s ease; }
+  .progress-pct { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+
+  .cursor { display: inline-block; width: 9px; height: 15px; background: var(--green); vertical-align: middle; margin-left: 3px; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .controls { padding: 10px 24px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border2); }
+  .target-input { font-family: var(--mono); font-size: 12px; padding: 5px 10px; background: var(--surface); border: 1px solid var(--border2); color: var(--green); outline: none; width: clamp(140px, 30vw, 240px); caret-color: var(--green); transition: border-color 0.12s; }
+  .target-input::placeholder { color: var(--text-dim); }
+  .target-input:focus { border-color: var(--green); }
+  .sep { width: 1px; height: 18px; background: var(--border2); flex-shrink: 0; }
+
+  .btn { font-family: var(--mono); font-size: 11px; padding: 5px 11px; background: transparent; border: 1px solid var(--border2); color: var(--text-dim); cursor: pointer; letter-spacing: 0.3px; transition: all 0.12s; white-space: nowrap; }
+  .btn:hover { border-color: var(--green); color: var(--green); }
+  .btn.active { border-color: var(--green); color: var(--green); background: var(--green2); }
+  .btn.danger { color: var(--red); border-color: rgba(255,51,51,0.2); }
+  .btn.danger:hover { background: rgba(255,51,51,0.07); border-color: var(--red); }
+
+  .main { padding: 18px 24px 64px; max-width: 960px; margin: 0 auto; }
+  .category { margin-bottom: 14px; border: 1px solid var(--border2); }
+  .cat-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); cursor: pointer; user-select: none; transition: background 0.1s; flex-wrap: nowrap; overflow: hidden; }
+  .cat-header:hover { background: #0f0f0f; }
+  .cat-prompt { color: var(--text-dim); font-size: 13px; flex-shrink: 0; }
+  .cat-id { color: var(--green); font-size: 12px; flex-shrink: 0; text-shadow: var(--green-glow); }
+  .cat-title { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cat-stats { font-size: 11px; color: var(--text-dim); flex-shrink: 0; margin-left: 8px; }
+  .cat-stats .done { color: var(--green); }
+  .cat-chevron { color: var(--text-dim); font-size: 10px; transition: transform 0.16s; flex-shrink: 0; }
+  .category.collapsed .cat-chevron { transform: rotate(-90deg); }
+  .category.collapsed .cat-body { display: none; }
+  .cat-desc { padding: 8px 14px; font-size: 11px; color: var(--text-dim); border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.5); line-height: 1.7; }
+  .cat-desc::before { content: '# '; color: var(--border2); }
+
+  .test-item { display: grid; grid-template-columns: 3px 18px 1fr; gap: 0 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.08s; align-items: start; }
+  .test-item:last-child { border-bottom: none; }
+  .test-item:hover { background: rgba(0,255,65,0.025); }
+  .test-item.done { background: rgba(0,255,65,0.015); }
+  .test-item.done .test-name { color: var(--text-dim); text-decoration: line-through; text-decoration-color: rgba(0,255,65,0.2); }
+  .test-item.done .test-detail { opacity: 0.38; }
+
+  .sev-bar { align-self: stretch; min-height: 16px; }
+  .s-high { background: var(--red); box-shadow: 0 0 5px rgba(255,51,51,0.4); }
+  .s-med { background: var(--yellow); box-shadow: 0 0 5px rgba(255,204,0,0.35); }
+  .s-low { background: var(--cyan); box-shadow: 0 0 5px rgba(0,229,255,0.3); }
+  .s-info { background: var(--gray); }
+
+  .check-box { width: 14px; height: 14px; border: 1px solid var(--gray); display: flex; align-items: center; justify-content: center; margin-top: 2px; flex-shrink: 0; transition: all 0.12s; }
+  .test-item:hover .check-box { border-color: var(--green); }
+  .test-item.done .check-box { background: var(--green); border-color: var(--green); box-shadow: var(--green-glow); }
+  .check-box svg { display: none; }
+  .test-item.done .check-box svg { display: block; }
+
+  .test-content { min-width: 0; }
+  .test-name { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+  .test-name::before { content: '> '; color: var(--text-dim); }
+  .test-detail { font-size: 11px; color: var(--text-dim); line-height: 1.65; margin-bottom: 6px; }
+  .test-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-size: 9px; padding: 2px 6px; border: 1px solid; letter-spacing: 0.5px; text-transform: uppercase; }
+  .t-high { color: var(--red); border-color: rgba(255,51,51,0.3); background: rgba(255,51,51,0.05); }
+  .t-med { color: var(--yellow); border-color: rgba(255,204,0,0.3); background: rgba(255,204,0,0.04); }
+  .t-low { color: var(--cyan); border-color: rgba(0,229,255,0.25); background: rgba(0,229,255,0.04); }
+  .t-tool { color: var(--green); border-color: rgba(0,255,65,0.2); background: rgba(0,255,65,0.04); }
+  .t-cwe { color: #666; border-color: rgba(100,100,100,0.2); background: transparent; }
+
+  footer { text-align: center; padding: 18px 24px; font-size: 11px; color: var(--text-dim); border-top: 1px solid var(--border2); }
+  footer a { color: var(--green); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .navbar { padding: 10px 14px; } .header { padding: 16px 14px 14px; } .controls { padding: 8px 14px; }
+    .main { padding: 12px 14px 52px; } .cat-header { padding: 9px 12px; gap: 6px; } .cat-desc { padding: 7px 12px; }
+    .test-item { padding: 9px 12px; gap: 0 10px; } .test-name { font-size: 12px; } .btn { font-size: 10px; padding: 5px 8px; }
+    .target-input { width: 100%; } .sep { display: none; } .progress-track { min-width: 70px; } .nav-links { gap: 10px; }
+  }
+  @media (max-width: 380px) { .nav-links { display: none; } .header-title { font-size: 13px; } .cat-title { font-size: 12px; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="https://kenziy.com"><span class="dim">~/</span>kenziy</a>
+  <ul class="nav-links">
+    <li><a href="https://kenziy.com/#about">about</a></li>
+    <li><a href="https://kenziy.com/#targets">targets</a></li>
+    <li><a href="https://kenziy.com/#cves">cves</a></li>
+    <li><a href="https://kenziy.com/#certs">certs</a></li>
+    <li><a href="https://hackerone.com/kenziy" target="_blank">hackerone</a></li>
+  </ul>
+</nav>
+
+<div class="header">
+  <div class="header-path">~/kenziy/<span class="hl">ios-checklist</span></div>
+  <div class="header-title">
+    <span class="prompt">$ </span>OWASP Mobile Top 10:2025 — iOS<span class="cursor"></span>
+  </div>
+  <div class="header-sub">
+    source: <a href="https://owasp.org/www-project-mobile-top-10/" target="_blank">owasp.org/www-project-mobile-top-10/</a>
+    &nbsp;·&nbsp; authorized penetration testing only
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><strong id="doneCount">0</strong> / <span id="totalCount">0</span> completed</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-pct" id="percentText">0%</div>
+  </div>
+</div>
+
+<div class="controls">
+  <input class="target-input" type="text" id="targetInput" placeholder="target: com.example.app" />
+  <div class="sep"></div>
+  <button class="btn" onclick="expandAll()">expand_all</button>
+  <button class="btn" onclick="collapseAll()">collapse_all</button>
+  <div class="sep"></div>
+  <button class="btn active" id="fAll" onclick="filterAll()">--all</button>
+  <button class="btn" id="fPending" onclick="filterPending()">--pending</button>
+  <button class="btn" id="fDone" onclick="filterDone()">--done</button>
+  <div class="sep"></div>
+  <button class="btn danger" onclick="resetAll()">reset</button>
+</div>
+
+<main class="main" id="main"></main>
+
+<footer>
+  <a href="https://kenziy.com">~/kenziy</a>
+  &nbsp;·&nbsp;
+  <a href="https://owasp.org/www-project-mobile-top-10/" target="_blank">OWASP Mobile Top 10</a>
+  &nbsp;·&nbsp;
+  <a href="https://hackerone.com/kenziy" target="_blank">HackerOne</a>
+  &nbsp;·&nbsp; for authorized use only
+</footer>
+
+<script>
+const CATS = [
+  { id:"M01:2025", title:"Improper Credential Usage",
+    desc:"Hardcoded credentials, insecure credential storage, and improper use of iOS credential management APIs lead to credential theft and unauthorized access.",
+    tests:[
+      {n:"Hardcoded Credentials in IPA",d:"Extract and analyze IPA binary with class-dump and strings to find API keys, passwords, tokens, and secrets embedded in the application.",s:"high",t:["class-dump","otool","MobSF"],c:["CWE-798"]},
+      {n:"Insecure Keychain Usage",d:"Inspect Keychain items for improper protection classes (kSecAttrAccessibleAlways) that allow access when device is locked or from backups.",s:"high",t:["objection","Frida","keychain-dumper"],c:["CWE-312"]},
+      {n:"Credential Leakage in NSLog/os_log",d:"Monitor console output during authentication flows for credentials, tokens, or sensitive data being logged via NSLog or os_log.",s:"high",t:["idevicesyslog","Console.app","Frida"],c:["CWE-532"]},
+      {n:"Credential Storage in NSUserDefaults",d:"Check NSUserDefaults plist files for plaintext passwords, tokens, or session data that should be stored in the Keychain instead.",s:"high",t:["objection","Frida","iExplorer"],c:["CWE-312"]},
+      {n:"Biometric Auth Bypass via Keychain ACLs",d:"Test if biometric authentication can be bypassed by hooking LAContext evaluatePolicy to always return success, circumventing Touch ID/Face ID.",s:"high",t:["Frida","objection"],c:["CWE-287"]},
+      {n:"Improper Use of Secure Enclave",d:"Verify that cryptographic keys requiring hardware protection are properly stored in the Secure Enclave with appropriate access control flags.",s:"high",t:["Frida","objection"],c:["CWE-321"]}
+    ]
+  },
+  { id:"M02:2025", title:"Inadequate Supply Chain Security",
+    desc:"Risks from third-party frameworks, CocoaPods/SPM dependencies, and build pipeline integrity that introduce vulnerabilities or malicious code.",
+    tests:[
+      {n:"CocoaPods/SPM Vulnerability Scanning",d:"Analyze Podfile.lock and Package.resolved for dependencies with known CVEs using vulnerability databases and dependency scanning tools.",s:"high",t:["OWASP DC","Snyk","CocoaPods"],c:["CWE-1104"]},
+      {n:"Malicious Framework Detection",d:"Analyze embedded frameworks for suspicious behaviors: unexpected network connections, keylogging, data exfiltration, or hidden functionality.",s:"high",t:["MobSF","Hopper","otool"],c:["CWE-829"]},
+      {n:"Outdated Dependencies in Podfile",d:"Extract dependency versions from the IPA and check for outdated libraries with known security vulnerabilities in CocoaPods/SPM registries.",s:"med",t:["OWASP DC","Snyk"],c:["CWE-1104"]},
+      {n:"Code Signing/Entitlements Review",d:"Verify code signing identity, check for overly permissive entitlements, and validate provisioning profile configuration for production builds.",s:"med",t:["codesign","MobSF","otool"],c:["CWE-345"]},
+      {n:"Bitcode/Symbol Stripping Check",d:"Verify that debug symbols are stripped from production builds and bitcode doesn't expose additional information that aids reverse engineering.",s:"low",t:["otool","nm","MobSF"],c:["CWE-656"]},
+      {n:"Third-Party SDK Privacy Manifests",d:"Check if included SDKs provide required privacy manifests (PrivacyInfo.xcprivacy) declaring their data collection practices per Apple's requirements.",s:"med",t:["MobSF","Manual"],c:["CWE-359"]}
+    ]
+  },
+  { id:"M03:2025", title:"Insecure Authentication/Authorization",
+    desc:"Weak authentication mechanisms and improper authorization allow attackers to bypass security controls and access protected functionality.",
+    tests:[
+      {n:"Local Authentication Bypass (LAContext)",d:"Hook LAContext evaluatePolicy with Frida to bypass local biometric/passcode authentication by forcing the completion handler to return success.",s:"high",t:["Frida","objection"],c:["CWE-287"]},
+      {n:"Touch ID/Face ID Implementation Flaws",d:"Test if biometric auth relies solely on a boolean check rather than Keychain-backed cryptographic operations that require biometric unlock.",s:"high",t:["Frida","objection"],c:["CWE-287"]},
+      {n:"Missing Server-Side Auth Validation",d:"Test if the app validates authentication state server-side or trusts client-side auth flags. Replay expired or modified tokens against the API.",s:"high",t:["Burp Suite","Frida"],c:["CWE-603"]},
+      {n:"URL Scheme Auth Bypass",d:"Test registered URL schemes (CFBundleURLSchemes) for authentication bypass by crafting deep links that navigate directly to protected views.",s:"high",t:["Frida","objection","Manual"],c:["CWE-284"]},
+      {n:"App Extension Data Sharing",d:"Check if app extensions (widgets, share extensions) share sensitive authentication data insecurely through shared containers or UserDefaults suites.",s:"med",t:["objection","Frida"],c:["CWE-200"]},
+      {n:"Keychain Access Group Misconfiguration",d:"Verify Keychain access groups are properly scoped. Overly broad access groups may allow other apps from the same developer to read credentials.",s:"high",t:["objection","Frida","keychain-dumper"],c:["CWE-284"]}
+    ]
+  },
+  { id:"M04:2025", title:"Insufficient Input/Output Validation",
+    desc:"Failure to validate, sanitize, and encode data at input/output boundaries leads to injection attacks and data manipulation in iOS apps.",
+    tests:[
+      {n:"URL Scheme Injection",d:"Craft malicious URL scheme calls with encoded payloads to test for injection in URL scheme handlers (application:openURL:options:).",s:"high",t:["Frida","Manual"],c:["CWE-939"]},
+      {n:"Universal Link Validation Bypass",d:"Test universal link (apple-app-site-association) handlers with crafted URLs to bypass validation and navigate to unintended app screens.",s:"high",t:["Frida","Burp Suite"],c:["CWE-939"]},
+      {n:"WebView JavaScript Bridge Injection",d:"Test WKWebView JavaScript message handlers (WKScriptMessageHandler) for injection by sending crafted messages from injected web content.",s:"high",t:["Frida","Burp Suite"],c:["CWE-79"]},
+      {n:"Plist Manipulation Attacks",d:"Modify property list files in the app's sandbox to inject malicious values that alter application behavior or bypass security checks.",s:"med",t:["objection","Frida","iExplorer"],c:["CWE-15"]},
+      {n:"Pasteboard Data Injection",d:"Test if the app processes clipboard data without validation. Place malicious content on UIPasteboard and trigger paste operations in the app.",s:"med",t:["Frida","Manual"],c:["CWE-20"]},
+      {n:"Custom Protocol Handler Fuzzing",d:"Fuzz custom URL protocol handlers with malformed, oversized, and specially crafted inputs to identify crashes, memory corruption, or unexpected behavior.",s:"high",t:["Frida","Manual"],c:["CWE-20"]}
+    ]
+  },
+  { id:"M05:2025", title:"Insecure Communication",
+    desc:"Sensitive data transmitted over unprotected channels or with weak TLS configurations can be intercepted on shared networks.",
+    tests:[
+      {n:"App Transport Security Exceptions",d:"Review Info.plist for NSAppTransportSecurity exceptions (NSAllowsArbitraryLoads, NSExceptionDomains) that weaken default HTTPS enforcement.",s:"high",t:["MobSF","otool","Manual"],c:["CWE-319"]},
+      {n:"Certificate Pinning Bypass",d:"Bypass SSL pinning using Frida scripts (ssl-kill-switch) or objection to intercept HTTPS traffic with a proxy certificate.",s:"high",t:["Frida","objection","Burp Suite"],c:["CWE-295"]},
+      {n:"Weak TLS Configuration",d:"Test for support of weak TLS versions (1.0/1.1), weak cipher suites, or custom URLSession configurations that weaken transport security.",s:"high",t:["testssl.sh","Burp Suite"],c:["CWE-327"]},
+      {n:"Network Extension Security",d:"If the app uses Network Extensions (VPN, content filter), verify they properly encrypt traffic and don't leak data outside the tunnel.",s:"med",t:["Wireshark","Frida"],c:["CWE-319"]},
+      {n:"Cleartext Traffic via NSAllowsArbitraryLoads",d:"Monitor network traffic for HTTP connections when ATS exceptions are present. Identify which domains communicate without TLS protection.",s:"high",t:["Burp Suite","Wireshark"],c:["CWE-319"]},
+      {n:"Improper Certificate Validation",d:"Check for custom URLSession delegate methods that bypass certificate validation (didReceiveChallenge with .useCredential for any challenge).",s:"high",t:["Frida","Hopper","MobSF"],c:["CWE-295"]}
+    ]
+  },
+  { id:"M06:2025", title:"Inadequate Privacy Controls",
+    desc:"Excessive data collection, improper PII handling, and insufficient privacy controls expose user data to unauthorized access.",
+    tests:[
+      {n:"Excessive Entitlements/Permissions",d:"Review app entitlements and Info.plist usage descriptions for unnecessary permissions (camera, photos, contacts, location) beyond functional needs.",s:"med",t:["MobSF","codesign","Manual"],c:["CWE-250"]},
+      {n:"PII in System Logs",d:"Monitor unified logging system during app usage for personally identifiable information being written via NSLog, os_log, or print statements.",s:"high",t:["idevicesyslog","Console.app","Frida"],c:["CWE-532"]},
+      {n:"Clipboard/UIPasteboard Leakage",d:"Check if the app copies sensitive data to UIPasteboard (general or named) where other apps can access it, especially with universal clipboard.",s:"med",t:["Frida","objection"],c:["CWE-200"]},
+      {n:"App Snapshot Screen Leakage",d:"Verify the app implements applicationWillResignActive to obscure sensitive content, preventing screenshots in the app switcher from leaking data.",s:"med",t:["Manual","Frida"],c:["CWE-200"]},
+      {n:"Location Data Over-Collection",d:"Check if the app requests 'Always' location when 'While Using' would suffice, and verify location data isn't stored or transmitted unnecessarily.",s:"med",t:["Frida","Burp Suite"],c:["CWE-359"]},
+      {n:"ATT Framework Compliance",d:"Verify the app properly implements App Tracking Transparency, requesting user consent before tracking and respecting the tracking authorization status.",s:"low",t:["Manual","Frida"],c:["CWE-359"]}
+    ]
+  },
+  { id:"M07:2025", title:"Insufficient Binary Protections",
+    desc:"Lack of runtime protections and obfuscation allows attackers to reverse-engineer, modify, and repackage the application.",
+    tests:[
+      {n:"Reverse Engineering with Hopper/IDA/Ghidra",d:"Disassemble the Mach-O binary to analyze code flow, identify security mechanisms, extract hardcoded secrets, and map the application logic.",s:"high",t:["Hopper","IDA Pro","Ghidra"],c:["CWE-693"]},
+      {n:"Runtime Manipulation with Frida/Cycript",d:"Use Frida or Cycript to hook Objective-C/Swift methods at runtime — modify return values, bypass checks, and manipulate application state.",s:"high",t:["Frida","Cycript","objection"],c:["CWE-693"]},
+      {n:"Jailbreak Detection Bypass",d:"Identify jailbreak detection mechanisms and bypass them using Frida hooks, Liberty Lite, or by patching the detection routines in the binary.",s:"high",t:["Frida","objection"],c:["CWE-693"]},
+      {n:"Anti-Debugging Mechanism Bypass",d:"Test for ptrace-based anti-debugging, sysctl checks, and other debugger detection. Bypass using Frida to hook detection functions.",s:"med",t:["Frida","lldb","objection"],c:["CWE-693"]},
+      {n:"ASLR/PIE Verification",d:"Verify the binary is compiled as Position Independent Executable (PIE) with ASLR enabled using otool to check Mach-O header flags.",s:"med",t:["otool","MobSF"],c:["CWE-119"]},
+      {n:"Method Swizzling Attacks",d:"Test if critical security methods can be swizzled at runtime to replace their implementations, bypassing authentication or authorization checks.",s:"high",t:["Frida","Cycript"],c:["CWE-693"]}
+    ]
+  },
+  { id:"M08:2025", title:"Security Misconfiguration",
+    desc:"Insecure default settings, excessive URL schemes, improper WebView configuration, and missing platform security features in iOS apps.",
+    tests:[
+      {n:"Insecure Info.plist Configuration",d:"Review Info.plist for security-relevant misconfigurations: ATS exceptions, excessive URL schemes, background modes, and exported document types.",s:"med",t:["MobSF","Manual"],c:["CWE-16"]},
+      {n:"Excessive URL Schemes Registered",d:"Check CFBundleURLSchemes for unnecessary URL schemes that expand the attack surface for URL scheme hijacking or injection attacks.",s:"med",t:["MobSF","otool"],c:["CWE-749"]},
+      {n:"Insecure WKWebView Settings",d:"Check for dangerous WKWebView configurations: JavaScript enabled with message handlers, allowsFileAccessFromFileURLs, or missing content filtering.",s:"high",t:["Frida","Hopper","MobSF"],c:["CWE-749"]},
+      {n:"Background Mode Data Exposure",d:"Test if the app processes or exposes sensitive data while running in background modes (audio, location, fetch, remote-notification).",s:"med",t:["Frida","Manual"],c:["CWE-200"]},
+      {n:"Insecure iCloud Sync Settings",d:"Check if sensitive data is inadvertently synced to iCloud via NSUbiquitousKeyValueStore, CloudKit, or files in Documents directory without exclusion.",s:"high",t:["objection","Frida"],c:["CWE-922"]},
+      {n:"Improper ATS Configuration",d:"Verify ATS is not globally disabled and exception domains are minimized. Check that excepted domains still use reasonable minimum TLS versions.",s:"high",t:["MobSF","Manual"],c:["CWE-319"]}
+    ]
+  },
+  { id:"M09:2025", title:"Insecure Data Storage",
+    desc:"Sensitive data stored insecurely on the device can be extracted by attackers with physical access or from device backups.",
+    tests:[
+      {n:"Sensitive Data in SQLite/CoreData",d:"Extract and examine SQLite databases and CoreData stores in the app's container for unencrypted passwords, tokens, PII, or financial data.",s:"high",t:["objection","iExplorer","sqlite3"],c:["CWE-312"]},
+      {n:"Keychain Protection Class Audit",d:"Dump Keychain items and verify protection classes. Items with kSecAttrAccessibleAlways or AfterFirstUnlock may be accessible when not appropriate.",s:"high",t:["keychain-dumper","objection","Frida"],c:["CWE-312"]},
+      {n:"Plist File Data Exposure",d:"Examine all plist files in the app container (preferences, caches, state) for sensitive data stored in plaintext property lists.",s:"high",t:["objection","iExplorer","Frida"],c:["CWE-312"]},
+      {n:"Cache/Cookie Storage Analysis",d:"Inspect URLCache, WKWebView cache, and cookie storage for cached API responses, session cookies, or authentication tokens persisted on disk.",s:"med",t:["objection","Frida"],c:["CWE-524"]},
+      {n:"Keyboard Cache Extraction",d:"Check if sensitive input fields use secureTextEntry or custom keyboards to prevent the system keyboard from caching typed content.",s:"med",t:["objection","Manual"],c:["CWE-200"]},
+      {n:"Realm Database Encryption Check",d:"If the app uses Realm, verify the database is encrypted with a key stored securely in the Keychain, not hardcoded or derived from predictable values.",s:"high",t:["objection","Frida"],c:["CWE-311"]}
+    ]
+  },
+  { id:"M10:2025", title:"Insufficient Cryptography",
+    desc:"Use of weak, broken, or improperly implemented cryptographic algorithms that fail to protect sensitive data.",
+    tests:[
+      {n:"Weak Encryption with CommonCrypto",d:"Identify use of deprecated algorithms (DES, 3DES, RC4, MD5, SHA-1) in CommonCrypto calls. Verify AES-256 and SHA-256+ are used for security operations.",s:"high",t:["Hopper","Frida","MobSF"],c:["CWE-327"]},
+      {n:"Hardcoded Encryption Keys in Binary",d:"Search the binary with strings, otool, and disassemblers for hardcoded symmetric keys, IVs, or salts used in cryptographic operations.",s:"high",t:["Hopper","otool","MobSF"],c:["CWE-321"]},
+      {n:"Insecure Random with arc4random",d:"Check if the app uses non-cryptographic random functions for security-sensitive operations instead of SecRandomCopyBytes.",s:"med",t:["Hopper","Frida"],c:["CWE-338"]},
+      {n:"Improper Use of CryptoKit",d:"Review CryptoKit usage for proper algorithm selection, key management, and ensure sealed boxes/authenticated encryption is used where appropriate.",s:"med",t:["Hopper","Frida"],c:["CWE-327"]},
+      {n:"Deprecated Crypto API Usage",d:"Identify use of deprecated Security framework APIs or legacy CommonCrypto patterns that may have known weaknesses or implementation issues.",s:"med",t:["MobSF","Hopper"],c:["CWE-327"]},
+      {n:"Custom Crypto Implementation Audit",d:"Identify any custom cryptographic implementations instead of Apple's CryptoKit or CommonCrypto. Custom crypto is almost always weaker than vetted libraries.",s:"high",t:["Hopper","Manual"],c:["CWE-327"]}
+    ]
+  },
+];
+
+const SK='kenziy_owasp_mobile_ios_2025';
+let S=JSON.parse(localStorage.getItem(SK)||'{}');
+function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+function ok(id,i){ return !!(S[id]&&S[id][i]); }
+function toggle(id,i){ if(!S[id]) S[id]={}; S[id][i]=!S[id][i]; save(); render(id); prog(); }
+function sc(s){ return s==='high'?'s-high':s==='med'?'s-med':s==='low'?'s-low':'s-info'; }
+function tc(s){ return s==='high'?'t-high':s==='med'?'t-med':'t-low'; }
+function sl(s){ return s==='high'?'HIGH':s==='med'?'MED':s==='low'?'LOW':'INFO'; }
+function cid(id){ return id.replace(':','_'); }
+
+function build(){
+  const m=document.getElementById('main'); m.innerHTML='';
+  CATS.forEach(cat=>{
+    const el=document.createElement('div');
+    el.className='category'; el.id='c_'+cid(cat.id);
+    el.innerHTML=`<div class="cat-header" onclick="toggleC('${cat.id}')">
+      <span class="cat-prompt">$</span><span class="cat-id">${cat.id}</span>
+      <span class="cat-title">${cat.title}</span>
+      <span class="cat-stats"><span class="done" id="sd_${cid(cat.id)}">0</span>/${cat.tests.length}</span>
+      <span class="cat-chevron">▼</span></div>
+    <div class="cat-body"><div class="cat-desc">${cat.desc}</div>
+      <div class="test-list" id="tl_${cid(cat.id)}"></div></div>`;
+    m.appendChild(el); render(cat.id);
+  });
+}
+
+function render(id){
+  const cat=CATS.find(c=>c.id===id);
+  const list=document.getElementById('tl_'+cid(id)); if(!list) return;
+  let dc=0;
+  list.innerHTML=cat.tests.map((t,i)=>{
+    const done=ok(id,i); if(done) dc++;
+    return `<div class="test-item${done?' done':''}" onclick="toggle('${id}',${i})">
+      <div class="sev-bar ${sc(t.s)}"></div>
+      <div class="check-box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+        <path d="M1 4L3.5 6.5L9 1" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="test-content"><div class="test-name">${t.n}</div><div class="test-detail">${t.d}</div>
+        <div class="test-tags"><span class="tag ${tc(t.s)}">${sl(t.s)}</span>
+          ${t.t.map(x=>`<span class="tag t-tool">${x}</span>`).join('')}
+          ${t.c.map(x=>`<span class="tag t-cwe">${x}</span>`).join('')}</div></div></div>`;
+  }).join('');
+  const s=document.getElementById('sd_'+cid(id)); if(s) s.textContent=dc;
+}
+
+function prog(){
+  let tot=0,dn=0;
+  CATS.forEach(c=>c.tests.forEach((_,i)=>{ tot++; if(ok(c.id,i)) dn++; }));
+  document.getElementById('doneCount').textContent=dn;
+  document.getElementById('totalCount').textContent=tot;
+  const p=tot?Math.round(dn/tot*100):0;
+  document.getElementById('progressFill').style.width=p+'%';
+  document.getElementById('percentText').textContent=p+'%';
+}
+
+function toggleC(id){ document.getElementById('c_'+cid(id)).classList.toggle('collapsed'); }
+function expandAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.remove('collapsed')); }
+function collapseAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.add('collapsed')); }
+function setF(id){ ['fAll','fPending','fDone'].forEach(f=>document.getElementById(f).classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function filterAll(){ document.querySelectorAll('.category').forEach(c=>c.classList.remove('hidden')); setF('fAll'); }
+function filterPending(){ CATS.forEach(c=>{ const all=c.tests.every((_,i)=>ok(c.id,i)); document.getElementById('c_'+cid(c.id)).classList.toggle('hidden',all); }); setF('fPending'); }
+function filterDone(){ CATS.forEach(c=>{ const all=c.tests.every((_,i)=>ok(c.id,i)); document.getElementById('c_'+cid(c.id)).classList.toggle('hidden',!all); }); setF('fDone'); }
+function resetAll(){ if(!confirm('reset all progress?')) return; S={}; save(); build(); prog(); }
+
+build(); prog();
+</script>
+</body>
+</html>
