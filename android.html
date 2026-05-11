@@ -4,25 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>~/kenziy — OWASP Mobile Top 10:2025 Android Checklist</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:       #000000;
-    --surface:  #0a0a0a;
-    --border:   #1a1a1a;
-    --border2:  #222222;
-    --green:    #00ff41;
-    --green2:   rgba(0,255,65,0.12);
-    --green-glow: 0 0 8px rgba(0,255,65,0.35);
+    --bg:       #0d1117;
+    --surface:  #161b22;
+    --border:   #21262d;
+    --border2:  #30363d;
+    --green:    #3fb950;
+    --green2:   rgba(63,185,80,0.12);
+    --green-glow: 0 0 8px rgba(63,185,80,0);
     --red:      #ff3333;
     --yellow:   #ffcc00;
     --cyan:     #00e5ff;
     --gray:     #444444;
-    --text:     #c8c8c8;
-    --text-dim: #555555;
-    --mono:     'Share Tech Mono', 'Courier New', monospace;
+    --text:     #e6edf3;
+    --text-dim: #8b949e;
+    --mono:     'IBM Plex Mono', 'Consolas', 'Menlo', monospace;
   }
 
   html { scroll-behavior: smooth; }
@@ -31,22 +31,14 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--mono);
-    font-size: 14px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.7;
     min-height: 100vh;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 2px,
-      rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
 
   .navbar {
     border-bottom: 1px solid var(--border2);
@@ -64,7 +56,8 @@
 
   .nav-brand {
     color: var(--green);
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 500;
     text-decoration: none;
     text-shadow: var(--green-glow);
   }
@@ -79,7 +72,7 @@
   .nav-links a {
     color: var(--text-dim);
     text-decoration: none;
-    font-size: 12px;
+    font-size: 13px;
     transition: color 0.12s;
   }
   .nav-links a:hover { color: var(--green); }
@@ -90,14 +83,15 @@
   }
 
   .header-path {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     margin-bottom: 8px;
   }
   .header-path .hl { color: var(--green); }
 
   .header-title {
-    font-size: clamp(15px, 3.5vw, 22px);
+    font-size: clamp(16px, 3.5vw, 24px);
+    font-weight: 500;
     color: var(--green);
     text-shadow: var(--green-glow);
     margin-bottom: 4px;
@@ -105,7 +99,7 @@
   .header-title .prompt { color: var(--text-dim); }
 
   .header-sub {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     margin-bottom: 18px;
   }
@@ -119,13 +113,14 @@
     flex-wrap: wrap;
   }
   .progress-label {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-dim);
     white-space: nowrap;
   }
   .progress-label strong {
     color: var(--green);
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 600;
     text-shadow: var(--green-glow);
   }
   .progress-track {
@@ -142,7 +137,7 @@
     transition: width 0.3s ease;
   }
   .progress-pct {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     white-space: nowrap;
   }
@@ -169,7 +164,7 @@
 
   .target-input {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     padding: 5px 10px;
     background: var(--surface);
     border: 1px solid var(--border2);
@@ -186,7 +181,7 @@
 
   .btn {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     padding: 5px 11px;
     background: transparent;
     border: 1px solid var(--border2);
@@ -224,21 +219,21 @@
     flex-wrap: nowrap;
     overflow: hidden;
   }
-  .cat-header:hover { background: #0f0f0f; }
+  .cat-header:hover { background: #1c2128; }
 
-  .cat-prompt { color: var(--text-dim); font-size: 13px; flex-shrink: 0; }
-  .cat-id     { color: var(--green); font-size: 12px; flex-shrink: 0; text-shadow: var(--green-glow); }
-  .cat-title  { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .cat-stats  { font-size: 11px; color: var(--text-dim); flex-shrink: 0; margin-left: 8px; }
+  .cat-prompt { color: var(--text-dim); font-size: 14px; flex-shrink: 0; }
+  .cat-id     { color: var(--green); font-size: 13px; font-weight: 500; flex-shrink: 0; text-shadow: var(--green-glow); }
+  .cat-title  { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cat-stats  { font-size: 12px; color: var(--text-dim); flex-shrink: 0; margin-left: 8px; }
   .cat-stats .done { color: var(--green); }
-  .cat-chevron { color: var(--text-dim); font-size: 10px; transition: transform 0.16s; flex-shrink: 0; }
+  .cat-chevron { color: var(--text-dim); font-size: 11px; transition: transform 0.16s; flex-shrink: 0; }
 
   .category.collapsed .cat-chevron { transform: rotate(-90deg); }
   .category.collapsed .cat-body    { display: none; }
 
   .cat-desc {
     padding: 8px 14px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     border-bottom: 1px solid var(--border);
     background: rgba(0,0,0,0.5);
@@ -257,12 +252,12 @@
     align-items: start;
   }
   .test-item:last-child { border-bottom: none; }
-  .test-item:hover { background: rgba(0,255,65,0.025); }
-  .test-item.done  { background: rgba(0,255,65,0.015); }
+  .test-item:hover { background: rgba(63,185,80,0.025); }
+  .test-item.done  { background: rgba(63,185,80,0.015); }
   .test-item.done .test-name {
     color: var(--text-dim);
     text-decoration: line-through;
-    text-decoration-color: rgba(0,255,65,0.2);
+    text-decoration-color: rgba(63,185,80,0.2);
   }
   .test-item.done .test-detail { opacity: 0.38; }
 
@@ -290,25 +285,26 @@
   .test-content { min-width: 0; }
 
   .test-name {
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--text);
     margin-bottom: 4px;
-    line-height: 1.4;
+    line-height: 1.5;
   }
   .test-name::before { content: '> '; color: var(--text-dim); }
 
   .test-detail {
-    font-size: 11px;
+    font-size: 12.5px;
     color: var(--text-dim);
-    line-height: 1.65;
+    line-height: 1.7;
     margin-bottom: 6px;
   }
 
   .test-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 
   .tag {
-    font-size: 9px;
-    padding: 2px 6px;
+    font-size: 10px;
+    padding: 2px 7px;
     border: 1px solid;
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -316,13 +312,13 @@
   .t-high { color: var(--red);    border-color: rgba(255,51,51,0.3);  background: rgba(255,51,51,0.05); }
   .t-med  { color: var(--yellow); border-color: rgba(255,204,0,0.3);  background: rgba(255,204,0,0.04); }
   .t-low  { color: var(--cyan);   border-color: rgba(0,229,255,0.25); background: rgba(0,229,255,0.04); }
-  .t-tool { color: var(--green);  border-color: rgba(0,255,65,0.2);   background: rgba(0,255,65,0.04); }
-  .t-cwe  { color: #666;          border-color: rgba(100,100,100,0.2);background: transparent; }
+  .t-tool { color: var(--green);  border-color: rgba(63,185,80,0.2);   background: rgba(63,185,80,0.04); }
+  .t-cwe  { color: #8b949e;          border-color: rgba(100,100,100,0.2);background: transparent; }
 
   footer {
     text-align: center;
     padding: 18px 24px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
     border-top: 1px solid var(--border2);
   }
@@ -339,8 +335,8 @@
     .cat-header { padding: 9px 12px; gap: 6px; }
     .cat-desc  { padding: 7px 12px; }
     .test-item { padding: 9px 12px; gap: 0 10px; }
-    .test-name { font-size: 12px; }
-    .btn       { font-size: 10px; padding: 5px 8px; }
+    .test-name { font-size: 13px; }
+    .btn       { font-size: 11px; padding: 5px 8px; }
     .target-input { width: 100%; }
     .sep       { display: none; }
     .progress-track { min-width: 70px; }

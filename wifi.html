@@ -4,13 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>~/kenziy — WiFi Penetration Testing Checklist</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --bg:#000000; --surface:#0a0a0a; --border:#1a1a1a; --border2:#222222; --green:#00ff41; --green2:rgba(0,255,65,0.12); --green-glow:0 0 8px rgba(0,255,65,0.35); --red:#ff3333; --yellow:#ffcc00; --cyan:#00e5ff; --gray:#444444; --text:#c8c8c8; --text-dim:#555555; --mono:'Share Tech Mono','Courier New',monospace; }
+  :root { --bg:#0d1117; --surface:#161b22; --border:#21262d; --border2:#30363d; --green:#3fb950; --green2:rgba(63,185,80,0.12); --green-glow:0 0 8px rgba(63,185,80,0); --red:#ff3333; --yellow:#ffcc00; --cyan:#00e5ff; --gray:#444444; --text:#e6edf3; --text-dim:#8b949e; --mono:'IBM Plex Mono','Consolas','Menlo','Courier New',monospace; }
   html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; line-height: 1.6; min-height: 100vh; }
-  body::after { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px); pointer-events: none; z-index: 9999; }
   .navbar { border-bottom: 1px solid var(--border2); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: var(--bg); position: sticky; top: 0; z-index: 200; }
   .nav-brand { color: var(--green); font-size: 15px; text-decoration: none; text-shadow: var(--green-glow); }
   .nav-brand .dim { color: var(--text-dim); }
@@ -46,7 +45,7 @@
   .main { padding: 18px 24px 64px; max-width: 960px; margin: 0 auto; }
   .category { margin-bottom: 14px; border: 1px solid var(--border2); }
   .cat-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); cursor: pointer; user-select: none; transition: background 0.1s; flex-wrap: nowrap; overflow: hidden; }
-  .cat-header:hover { background: #0f0f0f; }
+  .cat-header:hover { background: #1c2128; }
   .cat-prompt { color: var(--text-dim); font-size: 13px; flex-shrink: 0; }
   .cat-id { color: var(--green); font-size: 12px; flex-shrink: 0; text-shadow: var(--green-glow); }
   .cat-title { font-size: 13px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -59,9 +58,9 @@
   .cat-desc::before { content: '# '; color: var(--border2); }
   .test-item { display: grid; grid-template-columns: 3px 18px 1fr; gap: 0 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.08s; align-items: start; }
   .test-item:last-child { border-bottom: none; }
-  .test-item:hover { background: rgba(0,255,65,0.025); }
-  .test-item.done { background: rgba(0,255,65,0.015); }
-  .test-item.done .test-name { color: var(--text-dim); text-decoration: line-through; text-decoration-color: rgba(0,255,65,0.2); }
+  .test-item:hover { background: rgba(63,185,80,0.025); }
+  .test-item.done { background: rgba(63,185,80,0.015); }
+  .test-item.done .test-name { color: var(--text-dim); text-decoration: line-through; text-decoration-color: rgba(63,185,80,0.2); }
   .test-item.done .test-detail { opacity: 0.38; }
   .sev-bar { align-self: stretch; min-height: 16px; }
   .s-high { background: var(--red); box-shadow: 0 0 5px rgba(255,51,51,0.4); }
@@ -82,8 +81,8 @@
   .t-high { color: var(--red); border-color: rgba(255,51,51,0.3); background: rgba(255,51,51,0.05); }
   .t-med { color: var(--yellow); border-color: rgba(255,204,0,0.3); background: rgba(255,204,0,0.04); }
   .t-low { color: var(--cyan); border-color: rgba(0,229,255,0.25); background: rgba(0,229,255,0.04); }
-  .t-tool { color: var(--green); border-color: rgba(0,255,65,0.2); background: rgba(0,255,65,0.04); }
-  .t-cwe { color: #666; border-color: rgba(100,100,100,0.2); background: transparent; }
+  .t-tool { color: var(--green); border-color: rgba(63,185,80,0.2); background: rgba(63,185,80,0.04); }
+  .t-cwe { color: #8b949e; border-color: rgba(100,100,100,0.2); background: transparent; }
   footer { text-align: center; padding: 18px 24px; font-size: 11px; color: var(--text-dim); border-top: 1px solid var(--border2); }
   footer a { color: var(--green); text-decoration: none; }
   footer a:hover { text-decoration: underline; }

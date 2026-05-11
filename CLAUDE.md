@@ -8,12 +8,14 @@ Static personal landing page for kenziy (security researcher / pentester), hoste
 
 ## Architecture
 
-- **`index.html`** — Single-page site. Uses Bootstrap 5.2.3 (CDN), Font Awesome 6.2.1 (CDN), Google Fonts ("Covered By Your Grace"), and jQuery 3.6.1 (CDN).
-- **`css/style.css`** — Custom styles. Dark theme (`#111927` background, `#9fef00` accent for title, `#ffc107` hover).
-- **`js/script.js`** — Initializes Owl Carousel 2 on `.owl-carousel` (autoplay, 4 items, looping).
-- **`js/owl.carousel.min.js`** — Vendored Owl Carousel library (not from CDN).
-- **`css/assets/`** — Owl Carousel CSS assets (vendored).
-- **`img/`** — Company logo images displayed in the carousel.
+**Main site** (`index.html` + `css/style.css` + `js/script.js`):
+- Single-page layout using Bootstrap 5.2.3, Font Awesome 6.2.1, Google Fonts ("Covered By Your Grace" + "Fira Code"), jQuery 3.6.1 slim — all CDN except Owl Carousel (vendored in `js/` and `css/assets/`).
+- `js/script.js` runs inside `$(document).ready()` and does three things: matrix rain canvas animation (`#matrix-bg`), character-by-character typing effect (`#typed-text`), IntersectionObserver scroll-reveal (`.reveal` → `.active`), and Owl Carousel init.
+- Dark theme: `#111927` background, `#9fef00` accent, `#ffc107` hover, `#0d1117` alt sections.
+
+**OWASP checklist pages** (`android.html`, `ios.html`, `api.html`, `network.html`, `webapp.html`, `wifi.html`):
+- Fully self-contained — all CSS and JS are inlined (no shared stylesheet). Each uses "Share Tech Mono" font and a separate `#000` dark theme with `--green: #00ff41` accent.
+- Interactive checklists with localStorage persistence, progress tracking, and collapsible sections. These pages share a common design language but are independent files with no shared code.
 
 ## Development
 
@@ -25,6 +27,7 @@ python3 -m http.server 8000
 
 ## Key Details
 
-- jQuery is loaded as `slim` build (no AJAX/effects) — Owl Carousel is compatible with it.
-- All external dependencies are CDN-linked except Owl Carousel (vendored locally in `js/` and `css/assets/`).
+- jQuery slim build (no AJAX/effects) — Owl Carousel is compatible with it.
+- All external dependencies are CDN-linked except Owl Carousel (vendored locally).
+- Checklist pages are standalone — editing one does not affect others. When adding a new checklist, copy an existing one and update content.
 - No test suite, linter, or CI pipeline.

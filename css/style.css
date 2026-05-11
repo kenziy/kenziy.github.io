@@ -626,6 +626,7 @@ footer {
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
+    margin-bottom: 20px;
 }
 
 /* Stagger children */
